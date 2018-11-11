@@ -295,12 +295,12 @@ def delete_folder(db_obj, db_cursor, folder_id):
   db_cursor.execute(query_string)
   db_obj.commit()
 
-def move_file(db_obj, db_cursor, file_id, path_id, user_id):
+def move_file(db_obj, db_cursor, file_id, path_id):
   query_string = "update file set PATH="+str(new_folder_id)+"' where ID='"+str(path_id)+"'"
   db_cursor.execute(query_string)
   db_obj.commit()
 
-def move_folder(db_obj, db_cursor, folder_id, path_id, user_id):
+def move_folder(db_obj, db_cursor, folder_id, path_id):
   query_string = "update folder set PATH="+str(new_folder_id)+"' where ID='"+str(path_id)+"'"
   db_cursor.execute(query_string)
   db_obj.commit()
