@@ -76,8 +76,8 @@ class DropBoxDB:
     def delete_folder(self, folder_id):
         db.delete_folder(self.db_obj, self.db_cursor, folder_id)
 
-    def move_file(self, file_id, path_id, user_id):
-        db.move_file(self.db_obj, self.db_cursor, file_id, path_id, user_id)
+    def move_file(self, file_id, path_id):
+        db.move_file(self.db_obj, self.db_cursor, file_id, path_id)
 
     def move_folder(self, folder_id, path_id, user_id):
-        db.move_folder(self.db_obj, self.db_cursor, folder_id, path_id, user_id)
+        db.move_folder(self.db_obj, self.db_cursor, folder_id, path_id)
