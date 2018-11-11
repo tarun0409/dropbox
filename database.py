@@ -72,6 +72,33 @@ def authenticate_user(db_cursor, user_details):
     return True
   return False
 
+def modify_password(db_obj, db_cursor, user_details):
+  given_email_id = user_details["email"]
+  old_password = user_details["old_password"]
+  new_password = user_details["new_password"]
+  query_string = "select EMAIL, PASSWORD from user where EMAIL='"+given_email_id+"'"
+  db_cursor.execute(query_string)
+  result_tuple = db_cursor.fetchone()
+  passwd_hash = result_tuple[1]
+  m = hashlib.sha256()
+  m.update(old_password)
+  given_hash = m.hexdigest()
+  if passwd_hash == given_hash:
+    n = hashlib.sha256()
+    n.update(new_password)
+    new_pass_hash = n.hexdigest()
+    mod_string = "update user set PASSWORD='"+new_pass_hash+"' where EMAIL='"+given_email_id+"'"
+    db_cursor.execute(mod_string)
+    db_obj.commit()
+
+def get_root_path_id(db_cursor, user_id):
+  query_string = "select ID from folder where NAME='/' and OWNER="+str(user_id)
+  db_cursor.execute(query_string)
+  result_tuple = db_cursor.fetchone()
+  path_id = result_tuple[0]
+  return path_id
+
+
 def get_parent_folder_id(db_cursor, path, user_id):
   path_contents = path.split('/')
   path_contents = path_contents[1:]
@@ -106,12 +133,25 @@ def create_folder(db_obj, db_cursor, folder_details):
   f_name = folder_details["name"]
   f_path = folder_details["path"]
   f_owner = folder_details["owner"]
-  #parent_id = get_parent_folder_id(db_cursor, f_path, f_owner)
+  select_string = "select * from folder where NAME='"+f_name+"' and PATH="+str(path)
+  db_cursor.execute()
+  result_tuples = db_cursor.fetchall()
+  if len(result_tuples) > 0:
+    return
   query_string = "insert into folder (NAME, PATH, OWNER) values (%s, %s, %s)"
   value_tuple = (f_name, f_path, f_owner)
   db_cursor.execute(query_string, value_tuple)
   db_obj.commit()
 
+def folder_exists(db_cursor, folder_details):
+  f_name = folder_details["name"]
+  f_path = folder_details["path"]
+  select_string = "select * from folder where NAME='"+f_name+"' and PATH="+str(path)
+  db_cursor.execute()
+  result_tuples = db_cursor.fetchall()
+  if len(result_tuples) > 0:
+    return True
+  return False
 
 def create_file(db_obj, db_cursor, file_details):
   f_name = file_details["name"]
@@ -119,11 +159,26 @@ def create_file(db_obj, db_cursor, file_details):
   f_size = file_details["size"]
   f_owner = file_details["owner"]
   f_permission = file_details["permission"]
-  #parent_id = get_parent_folder_id(db_cursor, f_path, f_owner)
+  select_string = "select * from file where NAME='"+f_name+"' and PATH="+str(f_path)
+  db_cursor.execute(select_string)
+  result_tuples = db_cursor.fetchall()
+  if len(result_tuples) > 0:
+    return
   query_string = "insert into file (NAME, PATH, SIZE, OWNER, PERMISSION) values (%s, %s, %s, %s, %s)"
   value_tuple = (f_name, f_path, f_size, f_owner, f_permission)
   db_cursor.execute(query_string, value_tuple)
   db_obj.commit()
+
+def file_exists(db_cursor, file_details):
+  f_name = file_details["name"]
+  f_path = file_details["path"]
+  select_string = "select * from file where NAME='"+f_name+"' and PATH="+str(f_path)
+  db_cursor.execute(select_string)
+  result_tuples = db_cursor.fetchall()
+  if len(result_tuples) > 0:
+    return True
+  return False
+
 
 def get_file_path(db_cursor, file_id):
   curr_file_id = file_id

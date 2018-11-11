@@ -28,14 +28,26 @@ class DropBoxDB:
     def authenticate_user(self, user_details):
         return db.authenticate_user(self.db_cursor, user_details)
 
+    def modify_password(self, user_details):
+        db.modify_password(self.db_obj, self.db_cursor, user_details)
+
+    def get_root_path_id(self, user_id):
+        return db.get_root_path_id(self.db_cursor, user_id)
+
     def get_parent_folder_id(self, path, user_id):
         return db.get_parent_folder_id(self.db_cursor, path, user_id)
+
+    def folder_exists(self, folder_details):
+        return db.folder_exists(self.db_cursor, folder_details)
 
     def create_folder(self, folder_details):
         db.create_folder(self.db_obj, self.db_cursor, folder_details)
 
     def create_file(self, file_details):
         db.create_file(self.db_obj, self.db_cursor, file_details)
+
+    def file_exists(db_cursor, file_details):
+        return db.file_exists(self.db_cursor, file_details)
 
     def get_file_path(self, file_id):
         return db.get_file_path(self.db_cursor, file_id)
@@ -64,7 +76,7 @@ class DropBoxDB:
     def delete_folder(self, folder_id):
         db.delete_folder(self.db_obj, self.db_cursor, folder_id)
 
-    def move_file(self, file_id, path_id, , user_id):
+    def move_file(self, file_id, path_id, user_id):
         db.move_file(self.db_obj, self.db_cursor, file_id, path_id, user_id)
 
     def move_folder(self, folder_id, path_id, user_id):
