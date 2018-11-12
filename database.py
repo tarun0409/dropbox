@@ -179,6 +179,36 @@ def file_exists(db_cursor, file_details):
     return True
   return False
 
+#it returns an array of objects containing each file information matching the above criteria
+def search_files(db_cursor, user_id, search_string):
+  query_string = "select * from file where NAME like '%"+search_string+"%' and OWNER='"+str(user_id)+"'"
+  db_cursor.execute(query_string)
+  result_tuples = db_cursor.fetchall()
+  file_entries = list()
+  for result_tuple in result_tuples:
+    file_details = dict()
+    file_details["id"] = result_tuple[0]
+    file_details["name"] = str(result_tuple[1])
+    file_details["path"] = str(get_file_path(db_cursor, result_tuple[0]))
+    file_details["size"] = result_tuple[3]
+    file_details["owner"] = result_tuple[4]
+    file_details["permission"] = str(result_tuple[5])
+    file_entries.append(file_details)
+  query_string = "select * from file where NAME like '%"+search_string+"%' and OWNER!='"+str(user_id)+"' and PERMISSION='public'"
+  db_cursor.execute(query_string)
+  result_tuples = db_cursor.fetchall()
+  for result_tuple in result_tuples:
+    file_details = dict()
+    file_details["id"] = result_tuple[0]
+    file_details["name"] = str(result_tuple[1])
+    file_details["path"] = str(get_file_path(db_cursor, result_tuple[0]))
+    file_details["size"] = result_tuple[3]
+    file_details["owner"] = result_tuple[4]
+    file_details["permission"] = str(result_tuple[5])
+    file_entries.append(file_details)
+  return file_entries
+
+
 
 def get_file_path(db_cursor, file_id):
   curr_file_id = file_id
@@ -216,6 +246,11 @@ def get_folder_path(db_cursor, folder_id):
     curr_folder_id = result_tuple[1]
   return full_path
   
+def modify_file_permission(db_obj, db_cursor, file_id, new_permission):
+  update_string = "update file set PERMISSION='"+new_permission+"' where ID='"+str(file_id)+"'"
+  db_cursor.execute(update_string)
+  db_obj.commit()
+
 
 def get_file_details(db_cursor, file_id):
   query_string = "select * from file where ID='"+str(file_id)+"'"
