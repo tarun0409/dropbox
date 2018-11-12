@@ -46,7 +46,7 @@ class DropBoxDB:
     def create_file(self, file_details):
         db.create_file(self.db_obj, self.db_cursor, file_details)
 
-    def file_exists(db_cursor, file_details):
+    def file_exists(self, db_cursor, file_details):
         return db.file_exists(self.db_cursor, file_details)
 
     def get_file_path(self, file_id):

@@ -26,9 +26,9 @@ def move():
     if(request.method == "POST"):
         print("In move file")
         src_id = request.form["src_id"]
-        dest_path = request.form["dest_path"]
-        print("In move folder src:{0} dest{1}".format(src_id,dest_path))
-        db_obj.move_file(src_id,dest_path)
+        dest_id = request.form["dest_id"]
+        print("In move folder src:{0} dest{1}".format(src_id,dest_id))
+        db_obj.move_file(src_id,dest_id)
         return
 
 
