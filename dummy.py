@@ -1,13 +1,14 @@
-from flask import Flask, render_template, stream_with_context, request, Response
+from flask import Flask, render_template, stream_with_context, request, Response, session, Session, json
 import copy
 from jinja2 import Environment, PackageLoader, select_autoescape
 import time
 from dropboxdb import DropBoxDB
 
 db_obj = DropBoxDB("praveen","S@gem0de")
-
 #create the application.
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+# Session(app)
 
 @app.route('/delete_file/<id>/')
 def delete_file(id = None):
@@ -31,18 +32,32 @@ def move():
         db_obj.move_file(src_id,dest_id)
         return
 
+@app.route('/get_folder_list/<id>/', methods = ['GET', 'POST'])
+def get_folder_entries(id = None):
+    print("In get folder list {0}".format(id))
+    files = db_obj.get_folder_entries(id)
+    return files["folders"]
+
+@app.route('/get_nav_context/<id>/', methods = ['GET', 'POST'])
+def get_nav_context(id = None):
+    print("In get nav list {0}".format(id))
+    files = db_obj.get_navigation_context(int(id))
+    return json.dumps(files)
+
 
 @app.route('/view/')
 @app.route('/view/<id>/')
 def view(id=None):
+    session['id'] = 1
     if(id == None):
-        files = db_obj.get_folder_entries(5)
+        files = db_obj.get_folder_entries(db_obj.get_root_path_id(session["id"]))
+        print(files)
         return Response(render_template('for-if-showall.html', data=files))
     else:
-        files = db_obj.get_folder_entries(id)
-        return Response(render_template('for-if-showall.html', data=files))
+        files = db_obj.get_folder_entries(int(id))
+        print(files)
+        return json.dumps(files)
 
 
 if __name__ == '__main__':
-
     app.run(debug=True)

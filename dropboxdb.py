@@ -49,11 +49,20 @@ class DropBoxDB:
     def file_exists(self, db_cursor, file_details):
         return db.file_exists(self.db_cursor, file_details)
 
+    def search_files(self, user_id, search_string):
+        return db.search_files(self.db_cursor, user_id, search_string)
+
     def get_file_path(self, file_id):
         return db.get_file_path(self.db_cursor, file_id)
 
+    def get_navigation_context(self, folder_id):
+        return db.get_navigation_context(self.db_cursor, folder_id)
+
     def get_folder_path(self, folder_id):
         return db.get_folder_path(self.db_cursor, folder_id)
+
+    def modify_file_permission(self, file_id, new_permission):
+        db.modify_file_permission(self.db_obj, self.db_cursor, file_id, new_permission)
 
     def get_file_details(self, file_id):
         return db.get_file_details(self.db_cursor, file_id)

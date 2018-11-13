@@ -179,6 +179,36 @@ def file_exists(db_cursor, file_details):
     return True
   return False
 
+#it returns an array of objects containing each file information matching the above criteria
+def search_files(db_cursor, user_id, search_string):
+  query_string = "select * from file where NAME like '%"+search_string+"%' and OWNER='"+str(user_id)+"'"
+  db_cursor.execute(query_string)
+  result_tuples = db_cursor.fetchall()
+  file_entries = list()
+  for result_tuple in result_tuples:
+    file_details = dict()
+    file_details["id"] = result_tuple[0]
+    file_details["name"] = str(result_tuple[1])
+    file_details["path"] = str(get_file_path(db_cursor, result_tuple[0]))
+    file_details["size"] = result_tuple[3]
+    file_details["owner"] = result_tuple[4]
+    file_details["permission"] = str(result_tuple[5])
+    file_entries.append(file_details)
+  query_string = "select * from file where NAME like '%"+search_string+"%' and OWNER!='"+str(user_id)+"' and PERMISSION='public'"
+  db_cursor.execute(query_string)
+  result_tuples = db_cursor.fetchall()
+  for result_tuple in result_tuples:
+    file_details = dict()
+    file_details["id"] = result_tuple[0]
+    file_details["name"] = str(result_tuple[1])
+    file_details["path"] = str(get_file_path(db_cursor, result_tuple[0]))
+    file_details["size"] = result_tuple[3]
+    file_details["owner"] = result_tuple[4]
+    file_details["permission"] = str(result_tuple[5])
+    file_entries.append(file_details)
+  return file_entries
+
+
 
 def get_file_path(db_cursor, file_id):
   curr_file_id = file_id
@@ -199,6 +229,24 @@ def get_file_path(db_cursor, file_id):
     curr_folder_id = result_tuple[1]
   return full_path
 
+def get_navigation_context(db_cursor, folder_id):
+  curr_folder_id = folder_id
+  nav_context = list()
+  print("in begenning db: {0}".format(curr_folder_id))
+  while curr_folder_id is not None:
+    query_string = "select * from folder where ID = '"+str(curr_folder_id)+"'"
+    db_cursor.execute(query_string)
+    result_tuple = db_cursor.fetchall()[0]
+    folder_obj = dict()
+    folder_obj["id"] = result_tuple[0]
+    folder_obj["name"] = str(result_tuple[1])
+    folder_obj["path"] = result_tuple[2]
+    folder_obj["owner"] = result_tuple[3]
+    nav_context = [folder_obj] + nav_context
+    curr_folder_id = result_tuple[2]
+    print("in db: {0}".format(curr_folder_id))
+  return nav_context
+
 
 def get_folder_path(db_cursor, folder_id):
   curr_folder_id = folder_id
@@ -216,6 +264,11 @@ def get_folder_path(db_cursor, folder_id):
     curr_folder_id = result_tuple[1]
   return full_path
   
+def modify_file_permission(db_obj, db_cursor, file_id, new_permission):
+  update_string = "update file set PERMISSION='"+new_permission+"' where ID='"+str(file_id)+"'"
+  db_cursor.execute(update_string)
+  db_obj.commit()
+
 
 def get_file_details(db_cursor, file_id):
   query_string = "select * from file where ID='"+str(file_id)+"'"
