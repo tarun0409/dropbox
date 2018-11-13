@@ -18,5 +18,8 @@ db_obj = DropBoxDB("ateam","password")
 # file_details["permission"] = 'private'
 # db_obj.create_file(file_details)
 
-fe = db_obj.search_files(1, "file1")
-print str(fe)
+# fe = db_obj.search_files(1, "file1")
+# print str(fe)
+
+res = db_obj.get_navigation_context(4)
+print str(res)

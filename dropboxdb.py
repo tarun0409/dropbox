@@ -55,6 +55,9 @@ class DropBoxDB:
     def get_file_path(self, file_id):
         return db.get_file_path(self.db_cursor, file_id)
 
+    def get_navigation_context(self, folder_id):
+        return db.get_navigation_context(self.db_cursor, folder_id)
+
     def get_folder_path(self, folder_id):
         return db.get_folder_path(self.db_cursor, folder_id)
 
