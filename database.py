@@ -232,11 +232,10 @@ def get_file_path(db_cursor, file_id):
 def get_navigation_context(db_cursor, folder_id):
   curr_folder_id = folder_id
   nav_context = list()
-  print("in begenning db: {0}".format(curr_folder_id))
   while curr_folder_id is not None:
     query_string = "select * from folder where ID = '"+str(curr_folder_id)+"'"
     db_cursor.execute(query_string)
-    result_tuple = db_cursor.fetchall()[0]
+    result_tuple = db_cursor.fetchone()
     folder_obj = dict()
     folder_obj["id"] = result_tuple[0]
     folder_obj["name"] = str(result_tuple[1])
@@ -244,7 +243,6 @@ def get_navigation_context(db_cursor, folder_id):
     folder_obj["owner"] = result_tuple[3]
     nav_context = [folder_obj] + nav_context
     curr_folder_id = result_tuple[2]
-    print("in db: {0}".format(curr_folder_id))
   return nav_context
 
 
