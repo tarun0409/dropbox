@@ -5,7 +5,7 @@ import time
 from dropboxdb import DropBoxDB
 import thread
 import threading
-db_obj = DropBoxDB("praveen","S@gem0de")
+db_obj = DropBoxDB("ateam","password")
 #create the application.
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
