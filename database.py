@@ -232,18 +232,38 @@ def get_file_path(db_cursor, file_id):
 def get_navigation_context(db_cursor, folder_id):
   curr_folder_id = folder_id
   nav_context = list()
-  while curr_folder_id is not None:
-    query_string = "select * from folder where ID = '"+str(curr_folder_id)+"'"
-    db_cursor.execute(query_string)
-    result_tuple = db_cursor.fetchone()
+  query_string = "select * from folder"
+  db_cursor.execute(query_string)
+  result_tuples = db_cursor.fetchall()
+  master_obj = dict()
+  for result_tuple in result_tuples:
     folder_obj = dict()
     folder_obj["id"] = result_tuple[0]
-    folder_obj["name"] = str(result_tuple[1])
+    curr_id = result_tuple[0]
+    folder_obj["name"] = result_tuple[1]
     folder_obj["path"] = result_tuple[2]
     folder_obj["owner"] = result_tuple[3]
-    nav_context = [folder_obj] + nav_context
-    curr_folder_id = result_tuple[2]
+    master_obj[curr_id] = folder_obj
+
+  while curr_folder_id != None:
+    print(curr_folder_id)
+    curr_obj = master_obj[curr_folder_id]
+    nav_context = [curr_obj] + nav_context
+    curr_folder_id = curr_obj["path"]
   return nav_context
+  # while curr_folder_id is not None:
+  #   query_string = "select * from folder where ID = '"+str(curr_folder_id)+"'"
+  #   db_cursor.execute(query_string)
+  #   result_tuple = db_cursor.fetchone()
+  #   folder_obj = dict()
+  #   folder_obj["id"] = result_tuple[0]
+  #   folder_obj["name"] = str(result_tuple[1])
+  #   folder_obj["path"] = result_tuple[2]
+  #   folder_obj["owner"] = result_tuple[3]
+  #   nav_context = [folder_obj] + nav_context
+  #   curr_folder_id = result_tuple[2]
+  # db_cursor.close()
+  # return nav_context
 
 
 def get_folder_path(db_cursor, folder_id):

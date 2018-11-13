@@ -3,7 +3,8 @@ import copy
 from jinja2 import Environment, PackageLoader, select_autoescape
 import time
 from dropboxdb import DropBoxDB
-
+import thread
+import threading
 db_obj = DropBoxDB("praveen","S@gem0de")
 #create the application.
 app = Flask(__name__)
@@ -41,7 +42,9 @@ def get_folder_entries(id = None):
 @app.route('/get_nav_context/<id>/', methods = ['GET', 'POST'])
 def get_nav_context(id = None):
     print("In get nav list {0}".format(id))
+    lock.acquire()
     files = db_obj.get_navigation_context(int(id))
+    lock.release()
     return json.dumps(files)
 
 
@@ -50,14 +53,19 @@ def get_nav_context(id = None):
 def view(id=None):
     session['id'] = 1
     if(id == None):
+        lock.acquire()
         files = db_obj.get_folder_entries(db_obj.get_root_path_id(session["id"]))
+        lock.release()
         print(files)
         return Response(render_template('for-if-showall.html', data=files))
     else:
+        lock.acquire()
         files = db_obj.get_folder_entries(int(id))
+        lock.release()
         print(files)
         return json.dumps(files)
 
 
 if __name__ == '__main__':
+    lock=thread.allocate_lock()
     app.run(debug=True)
