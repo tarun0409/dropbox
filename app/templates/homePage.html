@@ -292,26 +292,25 @@
                     list.append("<tr>" +
                         "<td scope=\"row\" class=\"id\" hidden>" + row["id"] + "</a></td>" +
                         "<td class=\"type\" hidden>File</td>" +
-                        "<td class=\"col-1\"><i class=\"material-icons\">file_copy</i></td>" +
-                        "<td class=\"col-4\"><a href=\"#\" class=\"name\">" + row["name"] + "</a></td>" +
-                        "<td class=\"col-3\">" +
+                        "<td><i class=\"material-icons\">file_copy</i></td>" +
+                        "<td><a href=\"#\" class=\"name\">" + row["name"] + "</a></td>" +
+                        "<td>" +
                         "<select class=\"form-control\" id=\"Permission\">" +
                         "<option>Public</option>" +
                         "<option>Private</option>" +
                         "</select>" +
                         "</td>" +
-                        "<td scope=\"row\" class=\"user col-3\">" + row["owner"]["name"] + "</td>" +
-                        "<td class=\"col-1\">\
-                                    <li class=\"dropdown\">\
+                        "<td scope=\"row\" >" + row["owner"]["name"] + "</td>" +
+                        "<td> <div class=\"dropdown\">\
                                         <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\"\
                                         aria-haspopup=\"true\" aria-expanded=\"false\">...<span class=\"caret\"></span></a>\
                                         <ul class=\"dropdown-menu\">\
-                                            <li><a href=\"#\" class=\"delete\">delete</a></li>\
-                                            <li><a href=\"#\" class=\"download\">download</a></li>\
-                                            <li><a href=\"#\" class=\"move\">Move</a></li>\
+                                            <li><a href=\"#\" class=\"dropdown-item delete\">delete</a></li>\
+                                            <li><a href=\"#\" class=\"dropdown-item download\">download</a></li>\
+                                            <li><a href=\"#\" class=\"dropdown-item move\">Move</a></li>\
                                         </ul>\
                                     </li>\
-                                </td>" +
+                                </div>" +
                         "</tr>");
                 });
 
@@ -320,20 +319,20 @@
                     list.append("<tr>" +
                         "<td scope=\"row\" class=\"id\" hidden>" + row["id"] + "</a></td>" +
                         "<td class=\"type\" hidden>Folder</td>" +
-                        "<td class=\"col-1\"><i class=\"material-icons\">folder</i></td>" +
-                        "<td class=\"col-4\"><a href=\"#\" class=\"name\">" + row["name"] + "</a></td>" +
-                        "<td class=\"col-3\">-</td>" +
-                        "<td scope=\"row\" class=\"user col-3\">" + row["owner"]["name"] + "</td>" +
-                        "<td class=\"col-1\">\
-                                        <li class=\"dropdown\">\
+                        "<td><i class=\"material-icons\">folder</i></td>" +
+                        "<td><a href=\"#\" class=\"name\">" + row["name"] + "</a></td>" +
+                        "<td>-</td>" +
+                        "<td scope=\"row\">" + row["owner"]["name"] + "</td>" +
+                        "<td>\
+                                        <div class=\"dropdown\">\
                                             <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\"\
                                             aria-haspopup=\"true\" aria-expanded=\"false\">...<span class=\"caret\"></span></a>\
                                             <ul class=\"dropdown-menu\">\
-                                                <li><a href=\"#\" class=\"delete\">delete</a></li>\
-                                                <li><a href=\"#\" class=\"download\">download</a></li>\
-                                                <li><a href=\"#\" class=\"move\">Move</a></li>\
+                                                <li><a href=\"#\" class=\"dropdown-item delete\">delete</a></li>\
+                                                <li><a href=\"#\" class=\"dropdown-item download\">download</a></li>\
+                                                <li><a href=\"#\" class=\"dropdown-item move\">Move</a></li>\
                                             </ul>\
-                                        </li>\
+                                        </div>\
                                     </td>" +
                         "</tr>");
                 });
@@ -598,52 +597,6 @@
         </div>
         <div class="col-8 secondColumn">
 
-            <!-- <table class="table">
-                                            
-                                            <thead>
-                                                <tr class="d-flex">
-                                                    <th class="col-3">25</th>
-                                                    <th class="col-3">25</th>
-                                                    <th class="col-6">50</th>
-                                                </tr>
-                                            </thead>
-                                            
-                                            <tr class="active d-flex">
-                                                <th class="col-1"></th>
-                                                
-                                                <th class="col-6">Filename</th>
-                                                <th class="col-3">Type</th>
-                                                <th class="col-2">(buttons)</th>
-                                            </tr>
-                                            
-                                            <tr class="d-flex">
-                                                <td class="col-1"> <i class="material-icons">file_copy</i></td>
-                                                <td class="col-6">
-                                                    a.txt
-                                                </td>
-                                                <td class="col-3">
-                                                    Public
-                                                    <ul style="padding-left:15px">
-                                                        <li>Site Quality and Lean Head, USA based Aerospace company</li>          
-                                                    </ul>
-                                                </td>
-                                                <td class="col-2">(temp)</td>
-                                            </tr>
-                                            <tr class="d-flex">
-                                                <td class="col-1"><i class="material-icons">folder</i></td>
-                                                <td class="col-6">
-                                                    Folder1
-                                                </td>
-                                                <td class="col-3">
-                                                    Private
-                                                    <ul style="padding-left:15px">
-                                                        <li>Software Engineer</li>          
-                                                    </ul>
-                                                </td>
-                                                <td class="col-2">(temp)</td>
-                                                
-                                            </tr>
-                                        </table> -->
             <nav class="page-header-text u-l-fl" id="path-breadcrumbs" aria-label="Folder hierarchy" role="navigation">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb" id="nav-bar">
@@ -656,11 +609,11 @@
                     <tr class="active">
                         <th scope="col" hidden>ID</th>
                         <th scope="col" hidden>Type</th>
-                        <th class="col-1" scope="col"></th>
-                        <th class="col-4" scope="col">Name</th>
-                        <th class="col-3" scope="col">Permission</th>
-                        <th class="col-3" scope="col">User</th>
-                        <th class="col-1" scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Permission</th>
+                        <th scope="col">User</th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
 
@@ -669,45 +622,56 @@
                     <tr>
                         <td scope="row" class="id" hidden>{{row["id"]}}</td>
                         <td class="type" hidden>File</td>
-                        <td class="col-1"><i class="material-icons">file_copy</i></td>
-                        <td class="col-4"><a href="#" class="name">{{row["name"]}}</a></td>
-                        <td class="col-3">
+                        <td><i class="material-icons">file_copy</i></td>
+                        <td><a href="#" class="name">{{row["name"]}}</a></td>
+                        <td>
                             <select class="form-control" id="Permission">
                                                             <option>Public</option>
                                                             <option>Private</option>
                                                         </select>
                         </td>
-                        <td scope="row" class="user col-3">{{row["owner"]["name"]}}</td>
-                        <td class="col-1">
-                            <li class="dropdown">
+                        <td scope="row" class="user">{{row["owner"]["name"]}}</td>
+                        <td>
+                            <!-- <div class="dropdown">
+
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
+
+
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" class="delete" href="#">Delete</a>
+                                    <a class="dropdown-item" class="download" href="#">Download</a>
+                                    <a class="dropdown-item" class="move" href="#">Move</a>
+                                </div>
+                            </div> -->
+                            <div class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#" class="delete">delete</a></li>
-                                    <li><a href="#" class="download">download</a></li>
-                                    <li><a href="#" class="move">Move</a></li>
+                                    <li><a href="#" class="dropdown-item delete">delete</a></li>
+                                    <li><a href="#" class="dropdown-item download">download</a></li>
+                                    <li><a href="#" class="dropdown-item move">Move</a></li>
                                     <!-- <li><a href="#" class="move" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">move</a></li> -->
                                 </ul>
-                            </li>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %} {% for row in data["folders"] %}
                     <tr>
                         <td scope="row" class="id" hidden>{{row["id"]}}</td>
                         <td class="type" hidden>Folder</td>
-                        <td class="col-1"><i class="material-icons">folder</i></td>
-                        <td class="col-4"><a href="#" class="name">{{row["name"]}}</a></td>
-                        <td class="col-3">-</td>
-                        <td scope="row" class="user col-3">{{row["owner"]["name"]}}</td>
-                        <td class="col-1">
-                            <li class="dropdown">
+                        <td><i class="material-icons">folder</i></td>
+                        <td><a href="#" class="name">{{row["name"]}}</a></td>
+                        <td>-</td>
+                        <td scope="row">{{row["owner"]["name"]}}</td>
+                        <td>
+                            <div class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#" class="delete">delete</a></li>
-                                    <li><a href="#" class="download">download</a></li>
-                                    <li><a href="#" class="move">Move</a></li>
+                                    <li><a href="#" class="dropdown-item delete">delete</a></li>
+                                    <li><a href="#" class="dropdown-item download">download</a></li>
+                                    <li><a href="#" class="dropdown-item move">Move</a></li>
                                     <!-- <li><a href="#" class="move" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">move</a></li> -->
                                 </ul>
-                            </li>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
