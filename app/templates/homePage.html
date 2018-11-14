@@ -31,7 +31,7 @@
                 orig_size = data;
                 while(used_size > 1024)
                 {
-                    used_size = used_size/1024;
+                    used_size = parseFloat(used_size/1024).toFixed(2);
                     i++;
                 }
                 data = used_size.toString();
