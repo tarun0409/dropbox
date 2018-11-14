@@ -145,15 +145,8 @@
                 var x = $(this).parents("tr").find(".name").html();
                 console.log(x);
                 $("#dest_path").val(curr_page_id);
-                console.log("In on click download: " + $("#dest_path").val(curr_page_id));
-                url = "/download/";
-                //$("#myform input[name=first_name]").val()
-                //$("#fid input[name=f_name]").val(x);
-                //$("#fid input[name=dest_path]").val(y);
+                // console.log("In on click download: " + $("#dest_path").val(curr_page_id));
                 $("#f_name").val(x);
-                
-                //var href = $('.cssbuttongo').attr('href');
-                //window.location.href = href;
                 $('input[type=submit]')[0].click();
             });
             
@@ -185,16 +178,23 @@
             $(document).on("click", ".name", function() {
                 console.log("in click");
                 var id = $(this).parents("tr").children(".id").html();
+                var type = $(this).parents("tr").children(".type").html();
                 console.log(id);
-                // url = "/view/"+id+"/";
-                // $(location).attr('href',url);
-                curr_page_id = id;
-                $("#pathID").val(curr_page_id);
-                
-                $("#dest_path").val(curr_page_id);
-                console.log("In upload " + $("#pathID").val());
-                getAndUpdatePageData(id);
-                getAndUpdateNavBar();
+                if(type == "Folder") {
+                    // url = "/view/"+id+"/";
+                    // $(location).attr('href',url);
+                    curr_page_id = id;
+                    $("#pathID").val(curr_page_id);
+                    $("#dest_path").val(curr_page_id);
+                    getAndUpdatePageData(id);
+                    getAndUpdateNavBar();
+                }
+                else{
+                    $("#dest_path").val(curr_page_id);
+                    console.log("In on click download: " + $("#dest_path").val(curr_page_id));
+                    $("#f_name").val(id);
+                    $('input[type=submit]')[0].click();
+                }
             });
             
             
@@ -406,6 +406,8 @@
                                         foldername: bla,
                                         pathID: curr_page_id
                                     });
+                                    $("#btnClose").trigger( "click" );
+                                    getAndUpdatePageData(curr_page_id);
                                     console.log("Afterpost ");
                                 }),
                                 
@@ -506,7 +508,7 @@
                                             <input type="text" style="width: 100%" id="inputFolderName">
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" id="btnClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                             <button type="button" id="btnFolderCreate" class="btn btn-primary">Create folder</button>
                                         </div>
                                     </div>
