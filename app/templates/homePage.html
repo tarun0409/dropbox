@@ -480,7 +480,7 @@
                             <div class="main">
                                 
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="search_bar" placeholder="Search files">
+                                    <input autocomplete="on" type="text" class="form-control" id="search_bar" placeholder="Search files">
                                     <div class="input-group-append">
                                         <button class="btn btn-secondary" type="button" id="search_button">
                                             <i class="fa fa-search"></i>
@@ -566,42 +566,31 @@
                                 </nav>
                                 <table class="table table-hover" id="data">
                                     <thead>
-                                        <tr class="d-flex">
-                                            <th>ID</th>
-                                            <th>Type</th>
-                                            <th class="col-1"></th>
-                                            <th class="col-4">Name</th>
-                                            <th class="col-3">Permission</th>
-                                            <th class="col-3">User</th>
-                                            <th class="col-1"></th>
-                                            
-                                            
+                                        <tr class="active">
+                                            <th scope="col" hidden>ID</th>
+                                            <th scope="col" hidden>Type</th>
+                                            <th class="col-1" scope="col"></th>
+                                            <th class="col-4" scope="col">Name</th>
+                                            <th class="col-3" scope="col">Permission</th>
+                                            <th class="col-3" scope="col">User</th>
+                                            <th class="col-1" scope="col"></th>  
                                         </tr>
                                     </thead>
-                                    <!-- <thead>
-                                        <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Type</th>
-                                            <th scope="col">Name</th>
-                                        </tr>
-                                    </thead> -->    
+                                    
                                     <tbody id="tdata">
                                         {% for row in data["files"] %}
                                         <tr>
-                                            <td scope="row" class="id">{{row["id"]}}</td>
-                                            <td class="type">File</td>
+                                            <td scope="row" class="id" hidden>{{row["id"]}}</td>
+                                            <td class="type" hidden>File</td>
                                             <td class="col-1"><i class="material-icons">file_copy</i></td>
                                             <td class="col-4"><a href="#" class="name">{{row["name"]}}</a></td>
                                             <td class="col-3">
-                                                <li class="dropdown">
-                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
-                                                    <ul class="dropdown-menu">
-                                                        <li><a href="#" class="public">Public</a></li>
-                                                        <li><a href="#" class="private">Private</a></li>
-                                                    </ul>
-                                                </li>
+                                                <select class="form-control" id="Permission">
+                                                    <option>Public</option>
+                                                    <option>Private</option>
+                                                </select>
                                             </td>
-                                            <td scope="row" class="user col-3">{{row["user"]}}</td>
+                                            <td scope="row" class="user col-3">{{row["owner"]["name"]}}</td>
                                             <td class="col-1">
                                                 <li class="dropdown">
                                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
@@ -615,12 +604,12 @@
                                         </tr>
                                         {% endfor %} {% for row in data["folders"] %}
                                         <tr>
-                                            <td scope="row" class="id">{{row["id"]}}</td>
-                                            <td class="type">Folder</td>
+                                            <td scope="row" class="id" hidden>{{row["id"]}}</td>
+                                            <td class="type" hidden>Folder</td>
                                             <td class="col-1"><i class="material-icons">folder</i></td>
                                             <td class="col-4"><a href="#" class="name">{{row["name"]}}</a></td>
                                             <td class="col-3">-</td>
-                                            <td scope="row" class="user col-3">{{row["user"]}}</td>
+                                            <td scope="row" class="user col-3">{{row["owner"]["name"]}}</td>
                                             <td class="col-1">
                                                 <li class="dropdown">
                                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
