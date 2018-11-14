@@ -91,6 +91,7 @@
                     var jqxhr = $.get("/delete_folder/" + id + "/", function() {});
                 }
                 $(this).parents("tr").remove();
+                update_size();
             });
 
             $(document).on("click", ".move", function() {
@@ -101,21 +102,25 @@
             });
 
             $(document).on("click", "#moveherebtn", function() {
-                if (click_type == "File") {
-                    url = "/move_file/";
-                } else {
-                    url = "/move_folder/";
-                }
+                url = "/move_file/";
+                // if (click_type == "File") {
+                //     url = "/move_file/";
+                // } else {
+                //     url = "/move_folder/";
+                // }
                 console.log("Url: " + url);
                 console.log("Before post");
                 var dest_id = curr_page_id;
                 $.post(url, {
                     src_id: src_id,
                     dest_id: dest_id
+                }, function() {
+                    getAndUpdatePageData(curr_page_id);
                 });
                 console.log("After post");
                 $("#moveherebtn").hide();
-                getAndUpdatePageData(curr_page_id);
+                console.log("In move final click page id" + curr_page_id)
+
             });
 
 
@@ -302,15 +307,15 @@
                         "</td>" +
                         "<td scope=\"row\" >" + row["owner"]["name"] + "</td>" +
                         "<td> <div class=\"dropdown\">\
-                                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\"\
-                                    aria-haspopup=\"true\" aria-expanded=\"false\">...<span class=\"caret\"></span></a>\
-                                    <ul class=\"dropdown-menu\">\
-                                        <li><a href=\"#\" class=\"dropdown-item delete\">delete</a></li>\
-                                        <li><a href=\"#\" class=\"dropdown-item download\">download</a></li>\
-                                        <li><a href=\"#\" class=\"dropdown-item move\">Move</a></li>\
-                                    </ul>\
-                                </li>\
-                            </div>" +
+                                            <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\"\
+                                            aria-haspopup=\"true\" aria-expanded=\"false\">...<span class=\"caret\"></span></a>\
+                                            <ul class=\"dropdown-menu\">\
+                                                <li><a href=\"#\" class=\"dropdown-item delete\">delete</a></li>\
+                                                <li><a href=\"#\" class=\"dropdown-item download\">download</a></li>\
+                                                <li><a href=\"#\" class=\"dropdown-item move\">Move</a></li>\
+                                            </ul>\
+                                        </li>\
+                                    </div>" +
                         "</tr>");
                 });
 
@@ -324,16 +329,16 @@
                         "<td>-</td>" +
                         "<td scope=\"row\">" + row["owner"]["name"] + "</td>" +
                         "<td>\
-                                    <div class=\"dropdown\">\
-                                        <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\"\
-                                        aria-haspopup=\"true\" aria-expanded=\"false\">...<span class=\"caret\"></span></a>\
-                                        <ul class=\"dropdown-menu\">\
-                                            <li><a href=\"#\" class=\"dropdown-item delete\">delete</a></li>\
-                                            <li><a href=\"#\" class=\"dropdown-item download\">download</a></li>\
-                                            <li><a href=\"#\" class=\"dropdown-item move\">Move</a></li>\
-                                        </ul>\
-                                    </div>\
-                                </td>" +
+                                            <div class=\"dropdown\">\
+                                                <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\"\
+                                                aria-haspopup=\"true\" aria-expanded=\"false\">...<span class=\"caret\"></span></a>\
+                                                <ul class=\"dropdown-menu\">\
+                                                    <li><a href=\"#\" class=\"dropdown-item delete\">delete</a></li>\
+                                                    <li><a href=\"#\" class=\"dropdown-item download\">download</a></li>\
+                                                    <li><a href=\"#\" class=\"dropdown-item move\">Move</a></li>\
+                                                </ul>\
+                                            </div>\
+                                        </td>" +
                         "</tr>");
                 });
             }
@@ -460,8 +465,8 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Password Change</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
             </div>
             <div class="modal-body">
 
@@ -497,8 +502,8 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Enter folder name</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
             </div>
             <div class="modal-body">
                 <input type="text" style="width: 100%" id="inputFolderName">
@@ -517,14 +522,14 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">New message</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
             </div>
 
             <div class="modal-body">
                 <div class="modal-data">
                     <!-- <ul class="modal-list" id="move-list">
-                                            </ul> -->
+                                                    </ul> -->
                     <div class="list-group">
                     </div>
                 </div>
@@ -547,12 +552,12 @@
             <a class="navbar-brand" href="#!">DropBox</a>
             <div class="dropdown dropleft">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Settings
-                                        </button>
+                                                    Settings
+                                                </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
                     <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changepasswordmodal">
-                                                Create folder
-                                            </button> -->
+                                                        Create folder
+                                                    </button> -->
                     <a class="dropdown-item" data-toggle="modal" href="#changepasswordmodal">Change Password</a>
                     <!-- <a class="dropdown-item" href="#!" data-target="#changepasswordmodal">Change password</a> -->
                     <a class="dropdown-item" href="/logout">Logout</a>
@@ -569,8 +574,8 @@
                 <input autocomplete="on" type="text" class="form-control" id="search_bar" placeholder="Search files">
                 <div class="input-group-append">
                     <button class="btn btn-secondary" type="button" id="search_button">
-                                                <i class="fa fa-search"></i>
-                                            </button>
+                                                        <i class="fa fa-search"></i>
+                                                    </button>
                 </div>
             </div>
         </div>
@@ -598,51 +603,51 @@
         <div class="col-8 secondColumn">
 
             <!-- <table class="table">
-                                        
-                                        <thead>
-                                            <tr class="d-flex">
-                                                <th class="col-3">25</th>
-                                                <th class="col-3">25</th>
-                                                <th class="col-6">50</th>
-                                            </tr>
-                                        </thead>
-                                        
-                                        <tr class="active d-flex">
-                                            <th class="col-1"></th>
-                                            
-                                            <th class="col-6">Filename</th>
-                                            <th class="col-3">Type</th>
-                                            <th class="col-2">(buttons)</th>
-                                        </tr>
-                                        
-                                        <tr class="d-flex">
-                                            <td class="col-1"> <i class="material-icons">file_copy</i></td>
-                                            <td class="col-6">
-                                                a.txt
-                                            </td>
-                                            <td class="col-3">
-                                                Public
-                                                <ul style="padding-left:15px">
-                                                    <li>Site Quality and Lean Head, USA based Aerospace company</li>          
-                                                </ul>
-                                            </td>
-                                            <td class="col-2">(temp)</td>
-                                        </tr>
-                                        <tr class="d-flex">
-                                            <td class="col-1"><i class="material-icons">folder</i></td>
-                                            <td class="col-6">
-                                                Folder1
-                                            </td>
-                                            <td class="col-3">
-                                                Private
-                                                <ul style="padding-left:15px">
-                                                    <li>Software Engineer</li>          
-                                                </ul>
-                                            </td>
-                                            <td class="col-2">(temp)</td>
-                                            
-                                        </tr>
-                                    </table> -->
+                                                
+                                                <thead>
+                                                    <tr class="d-flex">
+                                                        <th class="col-3">25</th>
+                                                        <th class="col-3">25</th>
+                                                        <th class="col-6">50</th>
+                                                    </tr>
+                                                </thead>
+                                                
+                                                <tr class="active d-flex">
+                                                    <th class="col-1"></th>
+                                                    
+                                                    <th class="col-6">Filename</th>
+                                                    <th class="col-3">Type</th>
+                                                    <th class="col-2">(buttons)</th>
+                                                </tr>
+                                                
+                                                <tr class="d-flex">
+                                                    <td class="col-1"> <i class="material-icons">file_copy</i></td>
+                                                    <td class="col-6">
+                                                        a.txt
+                                                    </td>
+                                                    <td class="col-3">
+                                                        Public
+                                                        <ul style="padding-left:15px">
+                                                            <li>Site Quality and Lean Head, USA based Aerospace company</li>          
+                                                        </ul>
+                                                    </td>
+                                                    <td class="col-2">(temp)</td>
+                                                </tr>
+                                                <tr class="d-flex">
+                                                    <td class="col-1"><i class="material-icons">folder</i></td>
+                                                    <td class="col-6">
+                                                        Folder1
+                                                    </td>
+                                                    <td class="col-3">
+                                                        Private
+                                                        <ul style="padding-left:15px">
+                                                            <li>Software Engineer</li>          
+                                                        </ul>
+                                                    </td>
+                                                    <td class="col-2">(temp)</td>
+                                                    
+                                                </tr>
+                                            </table> -->
 
             <nav class="page-header-text u-l-fl" id="path-breadcrumbs" aria-label="Folder hierarchy" role="navigation">
                 <nav aria-label="breadcrumb">
@@ -673,23 +678,23 @@
                         <td><a href="#" class="name">{{row["name"]}}</a></td>
                         <td>
                             <select class="form-control" id="Permission">
-                                                        <option>Public</option>
-                                                        <option>Private</option>
-                                                    </select>
+                                                                <option>Public</option>
+                                                                <option>Private</option>
+                                                            </select>
                         </td>
                         <td scope="row" class="user">{{row["owner"]["name"]}}</td>
                         <td>
                             <!-- <div class="dropdown">
-                                                        
-                                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
-                                                        
-                                                        
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" class="delete" href="#">Delete</a>
-                                                            <a class="dropdown-item" class="download" href="#">Download</a>
-                                                            <a class="dropdown-item" class="move" href="#">Move</a>
-                                                        </div>
-                                                    </div> -->
+                                                                
+                                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
+                                                                
+                                                                
+                                                                <div class="dropdown-menu">
+                                                                    <a class="dropdown-item" class="delete" href="#">Delete</a>
+                                                                    <a class="dropdown-item" class="download" href="#">Download</a>
+                                                                    <a class="dropdown-item" class="move" href="#">Move</a>
+                                                                </div>
+                                                            </div> -->
                             <div class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
                                 <ul class="dropdown-menu">
@@ -730,9 +735,9 @@
                     <input type="submit" value="Submit">
                 </form>
                 <!-- <a href="{{ url_for('download', f_name='file1.txt'  ) }} " target="blank" class="cssbuttongo">
-                                            
-                                        </a> 
-                                    -->
+                                                    
+                                                </a> 
+                                            -->
             </table>
         </div>
 
@@ -766,16 +771,16 @@
 
 
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                            Create folder
-                                        </button>
+                                                    Create folder
+                                                </button>
                 </li>
                 <li class="list-group-item" id="forWhiteSmoke">
 
 
 
                     <button type="button" class="btn btn-primary movehere" id="moveherebtn" style="display:none;">
-                                            Move Here
-                                        </button>
+                                                    Move Here
+                                                </button>
                 </li>
             </ul>
 

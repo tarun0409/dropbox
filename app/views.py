@@ -14,13 +14,18 @@ import threading
 #127.0.0.1 localhost
 # lock=thread.allocate_lock()
 #db_obj = DropBoxDB("testuser","password")
-db_obj = DropBoxDB("testuser","password")
+# db_obj = DropBoxDB("testuser","password")
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 @app.before_request
 def require_login():
     allowed_routes = ['login' , 'register']
     if request.endpoint not in allowed_routes and 'email' not in session:
         return redirect(url_for('login'))
+
+@app.errorhandler(404) 
+def not_found(e): 
+  return render_template("404.html")
+
 
 @app.route('/search/', methods = ['GET'])
 def search_files():
@@ -69,6 +74,21 @@ def move():
         src_id = request.form["src_id"]
         dest_id = request.form["dest_id"]
         print("In move folder src:{0} dest{1}".format(src_id,dest_id))
+        src_path = db_obj.get_file_path(src_id)
+        print("src id ",src_path)
+        dest_path = db_obj.get_folder_path(dest_id)
+        print("destn path ",dest_path)
+        target = "/".join([APP_ROOT,"uploaded"])
+        target = "/".join([target,session['email']])
+        full_src_path = "".join([target,src_path])
+        full_dest_path = "".join([target,dest_path])
+        print("full src path:",full_src_path )
+        f_name = full_src_path.split('/')
+        x = f_name[len(f_name)-1]
+        print(x)
+        full_dest_path = "/".join([full_dest_path,x])
+        print("full destn path:",full_dest_path)
+        os.rename(full_src_path,full_dest_path)
         db_obj.move_file(src_id,dest_id)
         return "dsadsadsa"
 
@@ -89,7 +109,7 @@ def get_nav_context(id = None):
     return json.dumps(files)
 
 
-
+@app.route('/')
 @app.route('/view/')
 @app.route('/view/<id>/')
 def view(id=None):
@@ -234,6 +254,14 @@ def createFolder():
     print folder_details['name']
     folder_details["path"] = request.form['pathID']
     print("In create folder, path = {0}".format(folder_details["path"]))
+    folder_path = db_obj.get_folder_path(folder_details["path"])
+    target = "/".join([APP_ROOT,"uploaded"])
+    target = "/".join([target,session['email']])
+    target = "/".join([target,folder_path])
+    target = "/".join([target,folder_details['name']])
+    print("target for folder create ",target)
+    if (not os.path.isdir(target)):
+        os.makedirs(target)
     owner_id = db_obj.get_user_id(session['email'])
     print(owner_id)
     folder_details["owner"] = owner_id
