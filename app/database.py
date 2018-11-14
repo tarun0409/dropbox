@@ -316,7 +316,13 @@ def get_folder_entries(db_cursor, folder_id):
     file_details["name"] = str(result_tuple[1])
     file_details["path"] = str(get_file_path(db_cursor, result_tuple[0]))
     file_details["size"] = result_tuple[3]
-    file_details["owner"] = result_tuple[4]
+    owner_string = "select * from user where ID='"+str(result_tuple[4])+"'"
+    db_cursor.execute(owner_string)
+    rt = db_cursor.fetchone()
+    owner_obj = dict()
+    owner_obj["id"] = rt[0]
+    owner_obj["name"] = rt[2]
+    file_details["owner"] = owner_obj
     file_details["permission"] = str(result_tuple[5])
     file_entries.append(file_details)
   entries["files"] = file_entries
@@ -329,7 +335,13 @@ def get_folder_entries(db_cursor, folder_id):
     folder_details["id"] = result_tuple[0]
     folder_details["name"] = str(result_tuple[1])
     folder_details["path"] = str(get_folder_path(db_cursor, result_tuple[0]))
-    folder_details["owner"] = result_tuple[3]
+    owner_string = "select * from user where ID='"+str(result_tuple[3])+"'"
+    db_cursor.execute(owner_string)
+    rt = db_cursor.fetchone()
+    owner_obj = dict()
+    owner_obj["id"] = rt[0]
+    owner_obj["name"] = rt[2]
+    folder_details["owner"] = owner_obj
     folder_entries.append(folder_details)
   entries["folders"] = folder_entries
   return entries
