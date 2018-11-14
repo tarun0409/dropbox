@@ -266,7 +266,8 @@ def register():
             flash(to_register_email)
             flash(to_register_name)
             print("Create user successful")
-            return Response(render_template('login.html',title='login',fromreg="user registered successfully"))
+            return redirect(url_for('login'))
+            # return Response(render_template('login.html',title='login',fromreg="user registered successfully"))
             
 
     except Exception as e:
