@@ -574,8 +574,8 @@
                                             <th class="col-3">Permission</th>
                                             <th class="col-3">User</th>
                                             <th class="col-1"></th>
-
-
+                                            
+                                            
                                         </tr>
                                     </thead>
                                     <!-- <thead>
@@ -590,8 +590,19 @@
                                         <tr>
                                             <td scope="row" class="id">{{row["id"]}}</td>
                                             <td class="type">File</td>
-                                            <td><a href="#" class="name">{{row["name"]}}</a></td>
-                                            <td>
+                                            <td class="col-1"><i class="material-icons">file_copy</i></td>
+                                            <td class="col-4"><a href="#" class="name">{{row["name"]}}</a></td>
+                                            <td class="col-3">
+                                                <li class="dropdown">
+                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="#" class="public">Public</a></li>
+                                                        <li><a href="#" class="private">Private</a></li>
+                                                    </ul>
+                                                </li>
+                                            </td>
+                                            <td scope="row" class="user col-3">{{row["user"]}}</td>
+                                            <td class="col-1">
                                                 <li class="dropdown">
                                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
                                                     <ul class="dropdown-menu">
@@ -606,8 +617,11 @@
                                         <tr>
                                             <td scope="row" class="id">{{row["id"]}}</td>
                                             <td class="type">Folder</td>
-                                            <td><a href="#" class="name">{{row["name"]}}</a></td>
-                                            <td>
+                                            <td class="col-1"><i class="material-icons">folder</i></td>
+                                            <td class="col-4"><a href="#" class="name">{{row["name"]}}</a></td>
+                                            <td class="col-3">-</td>
+                                            <td scope="row" class="user col-3">{{row["user"]}}</td>
+                                            <td class="col-1">
                                                 <li class="dropdown">
                                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
                                                     <ul class="dropdown-menu">
