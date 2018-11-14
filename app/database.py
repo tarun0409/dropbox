@@ -57,6 +57,16 @@ def create_user(db_obj, db_cursor, user_details):
   val_string = (email_id, name, pass_hash)
   db_cursor.execute(query_string, val_string)
   db_obj.commit()
+  query_string = "select ID from user where EMAIL='"+email_id+"'"
+  db_cursor.execute(query_string)
+  rt = db_cursor.fetchone()
+  u_id = rt[0]
+  print("in creaste user: " + str(u_id))
+  folder_obj = dict()
+  folder_obj["name"] = "/"
+  folder_obj["path"] = None
+  folder_obj["owner"] = u_id
+  create_folder(db_obj, db_cursor, folder_obj)
 
 def authenticate_user(db_cursor, user_details):
   given_email_id = user_details["email"]
@@ -92,6 +102,7 @@ def modify_password(db_obj, db_cursor, user_details):
     db_obj.commit()
 
 def get_root_path_id(db_cursor, user_id):
+  print("In get root path, user id {0}".format(user_id))
   query_string = "select ID from folder where NAME='/' and OWNER="+str(user_id)
   db_cursor.execute(query_string)
   result_tuple = db_cursor.fetchone()
@@ -132,12 +143,14 @@ def get_parent_folder_id(db_cursor, path, user_id):
 def create_folder(db_obj, db_cursor, folder_details):
   f_name = folder_details["name"]
   f_path = folder_details["path"]
+  print("In create folder, {0}".format(f_path))
   f_owner = folder_details["owner"]
-  select_string = "select * from folder where NAME='"+f_name+"' and PATH="+str(f_path)
-  db_cursor.execute(select_string)
-  result_tuples = db_cursor.fetchall()
-  if len(result_tuples) > 0:
-    return
+  if(f_path is not None):
+    select_string = "select * from folder where NAME='"+f_name+"' and PATH="+str(f_path)
+    db_cursor.execute(select_string)
+    result_tuples = db_cursor.fetchall()
+    if len(result_tuples) > 0:
+      return
   query_string = "insert into folder (NAME, PATH, OWNER) values (%s, %s, %s)"
   value_tuple = (f_name, f_path, f_owner)
   db_cursor.execute(query_string, value_tuple)

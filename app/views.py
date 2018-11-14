@@ -33,6 +33,12 @@ def search_files():
     print(files)
     return json.dumps(files)
 
+@app.route('/modify_permission/<id>', methods = ['GET'])
+def modifyPermission(id=None):
+    db_obj = DropBoxDB("praveen","S@gem0de")
+
+
+
 @app.route('/used_space', methods=['GET'])
 def get_file_size():
     db_obj = DropBoxDB("praveen","S@gem0de")
@@ -45,7 +51,7 @@ def delete_file(id = None):
     db_obj = DropBoxDB("praveen","S@gem0de")
     print("In delete file{0}".format(id))
     db_obj.delete_file(id)
-    return
+    return "Dsadsadas"
 
 @app.route('/delete_folder/<id>/')
 def delete_folder(id = None):
@@ -91,7 +97,8 @@ def view(id=None):
     if(id == None):
         # lock.acquire()
         db_obj = DropBoxDB("praveen","S@gem0de")
-        files = db_obj.get_folder_entries(db_obj.get_root_path_id(session["id"]))
+        print("In view, {0}".format(session["id"]))
+        files = db_obj.get_folder_entries(db_obj.get_root_path_id(int(session["id"])))
         # lock.release()
         # print(files)
         return Response(render_template('homePage.html', data=files))
@@ -107,26 +114,6 @@ def view(id=None):
 @app.route("/homePage/")
 def homePage():
     return render_template('homePage.html')
-
-# @app.route("/")  # home/index route
-# @app.route("/index",  methods=['GET','POST'])
-# def index():
-#     error=''
-#     try:
-#         if(request.method == "POST"):
-#             sub = request.form["submit"]
-            
-#             flash(sub)
-           
-#             if(sub):
-#                 return redirect(url_for('upload'))
-#             else:
-#                 error = "Invalid try again"
-#                 return render_template('login.html',title='login',error=error)
-#     except Exception as e:
-#         flash(e)
-#         return render_template('login.html',title='login',error=error)
-#     return render_template('homePage.html',title="homepage")
 
 @app.route('/download/', methods = ['GET', 'POST'])
 def download():
@@ -275,13 +262,17 @@ def register():
             user_details["name"] = to_register_name
             user_details["password"] = to_register_pwd
             db_obj.create_user(user_details)
+            print("Before flash")
             flash(to_register_email)
             flash(to_register_name)
-            return render_template('login.html',title='login',fromreg="user registered successfully")
+            print("Create user successful")
+            return Response(render_template('login.html',title='login',fromreg="user registered successfully"))
             
 
     except Exception as e:
-        flash(e)
+        print("Exception!")
+        print(e)
+        # flash(e)
         return render_template('register.html',title='register',error=error)
 
     #return render_template('login.html',title='login',error=error)
@@ -296,23 +287,27 @@ def login():
     error=''
     try:
         if(request.method == "POST"):
+            print("Debug 1")
             attempted_email = request.form["email"]
             attempted_pwd = request.form['password']
             flash(attempted_email)
             flash(attempted_pwd)
-
+            print("Debug 2, after flash")
             user_details = dict()
             user_details["email"] = attempted_email
             #user_details["name"] = "Tarun"
-            user_details["password"] = attempted_pwd
-            db_obj.authenticate_user(user_details)        
+            user_details["password"] = attempted_pwd  
+            print("Debug 3")     
 
             #if(attempted_email=="chitta.vssut@gmail.com" and attempted_pwd=="123"):
             if(db_obj.authenticate_user(user_details)):
+                print("Authentication success!")
                 session['email'] = attempted_email
                 session['id'] = db_obj.get_user_id(attempted_email)
+                print("In login session id: {0}".format(session['id']))
                 return redirect(url_for('view'))
             else:
+                print("Authentication Fail!")
                 error = "Invalid try again"
                 return render_template('login.html',title='login',error=error)
     except Exception as e:
