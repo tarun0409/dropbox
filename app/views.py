@@ -236,7 +236,7 @@ def createFolder():
 @app.route("/get_root_path/",methods=['GET','POST'])
 def getRootPath():
     db_obj = DropBoxDB("praveen","S@gem0de")
-    return json.dumps(session["id"])
+    return json.dumps(db_obj.get_root_path_id(session["id"]))
 
 @app.route("/register", methods=['GET','POST'])
 def register():
