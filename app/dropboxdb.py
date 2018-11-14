@@ -8,10 +8,10 @@ class DropBoxDB:
         host="localhost",
         user=user_name,
         passwd=password,
-        database="dropbox",
-        buffered = True)
+        database="dropbox")
         self.db_cursor = self.db_obj.cursor()
-    def get_user_details(id):
+
+    def get_user_details(self,id):
         return db.get_user_details(self.db_cursor, id)
 
     def create_user(self, user_details):
