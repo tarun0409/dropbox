@@ -70,6 +70,7 @@ def get_nav_context(id = None):
 @app.route('/view/<id>/')
 def view(id=None):
     session['id'] = 1
+       
     if(id == None):
         # lock.acquire()
         db_obj = DropBoxDB("testuser","password")
@@ -188,7 +189,7 @@ def upload():
         file_details["permission"] = "private"
         db_obj.create_file(file_details)
         #return "success"
-        return redirect(url_for('view'))
+        #return redirect(url_for('view'))
         #return view()
     #return render_template('upload.html')
     return "dummy value"
@@ -254,6 +255,7 @@ def register():
             db_obj.create_user(user_details)
             flash(to_register_email)
             flash(to_register_name)
+            return render_template('login.html',title='login',fromreg="user registered successfully")
             
 
     except Exception as e:
