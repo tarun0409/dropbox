@@ -80,6 +80,51 @@
                 $("#pathID").val(curr_page_id);
             });
 
+            $('#Permission').on('change', function() {
+                var value = $(this).val();
+                alert(value);
+                var id = $(this).parents("tr").children(".id").html();
+                url = "/permission"
+                console.log("in permisson" + id);
+                $.get(url, {
+                        file_id: id.toString(),
+                        new_permission: value
+                    },
+                    function(data) {
+                        //updatePageData(JSON.parse(data));
+                    });
+
+            });
+
+            // //for perm 
+            // $(document).on("click", ".public_option", function() {
+            //     var id = $(this).parents("tr").children(".id").html();
+            //     url = "/permission"
+            //     console.log("in permisson" + id);
+            //     $.get(url, {
+            //             file_id: id.toString(),
+            //             new_permission: 'public'
+            //         },
+            //         function(data) {
+            //             //updatePageData(JSON.parse(data));
+            //         });
+
+            // });
+            // //for perm
+            // $(document).on("click", ".private_option", function() {
+            //     var id = $(this).parents("tr").children(".id").html();
+            //     console.log("in permission" + id);
+            //     url = "/permission"
+            //     $.get(url, {
+            //             file_id: id.toString(),
+            //             new_permission: 'private'
+            //         },
+            //         function(data) {
+            //             //updatePageData(JSON.parse(data));
+            //         });
+
+            // });
+
             // Delete row on delete button click
             $(document).on("click", ".delete", function() {
                 console.log("in delete");
@@ -215,7 +260,6 @@
                 getAndUpdateNavBar();
             });
 
-
             //Update current path 
             function updateCurrPath() {
                 x = $(location).attr('href');
@@ -301,8 +345,8 @@
                         "<td><a href=\"#\" class=\"name\">" + row["name"] + "</a></td>" +
                         "<td>" +
                         "<select class=\"form-control\" id=\"Permission\">" +
-                        "<option>Public</option>" +
-                        "<option>Private</option>" +
+                        "<option class=\"public_option\">Public</option>" +
+                        "<option class=\"private_option\">Private</option>" +
                         "</select>" +
                         "</td>" +
                         "<td scope=\"row\" >" + row["owner"]["name"] + "</td>" +
@@ -678,8 +722,8 @@
                         <td><a href="#" class="name">{{row["name"]}}</a></td>
                         <td>
                             <select class="form-control" id="Permission">
-                                                                <option>Public</option>
-                                                                <option>Private</option>
+                                    <option class="public_option">Public</option>
+                                    <option class="private_option">Private</option>
                                                             </select>
                         </td>
                         <td scope="row" class="user">{{row["owner"]["name"]}}</td>

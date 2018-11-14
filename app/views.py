@@ -26,6 +26,13 @@ def require_login():
 def not_found(e): 
   return render_template("404.html")
 
+@app.route('/permission/',methods=['GET'])
+def change_permission():
+    file_id = int(request.args.get("file_id"))
+    perm = request.args.get("new_permission")
+    db_obj = DropBoxDB("testuser","password")
+    db_obj.modify_file_permission(file_id, perm)
+    return "dummy"
 
 @app.route('/search/', methods = ['GET'])
 def search_files():
