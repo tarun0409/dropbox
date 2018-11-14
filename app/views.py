@@ -43,6 +43,7 @@ def modifyPermission(id=None):
 def get_file_size():
     db_obj = DropBoxDB("praveen","S@gem0de")
     file_size = db_obj.get_used_space(session['id'])
+    print("file size is ",file_size)
     return str(file_size)
 
 
@@ -93,12 +94,13 @@ def get_nav_context(id = None):
 @app.route('/view/<id>/')
 def view(id=None):
     #session['id'] = 1
+    print("before accessing session print")
+    print(session['id'])
     print("In view, id= {0}".format(id))
     if(id == None):
         # lock.acquire()
         db_obj = DropBoxDB("praveen","S@gem0de")
-        print("In view, {0}".format(session["id"]))
-        files = db_obj.get_folder_entries(db_obj.get_root_path_id(int(session["id"])))
+        files = db_obj.get_folder_entries(db_obj.get_root_path_id(int(session['id'])))
         # lock.release()
         print(files)
         return Response(render_template('homePage.html', data=files))
@@ -122,23 +124,29 @@ def download():
     #if(True):
         print("In dload file")
         f_name = request.form["f_name"]
-        dest_path = request.form["dest_path"]
-        print("received dest_path ",dest_path)
-        full_path = ""
-        if(dest_path!=""):
-            full_path = db_obj.get_folder_path(int(dest_path))
-        print("after query completes ")
-        #f_name = request.args.get('f_name')
-        print("please dload ",f_name," from ",full_path)
-        print("app root is ",APP_ROOT)
+        #return f_name
+        file_path = db_obj.get_file_path(int(f_name))
+        print("fp is ",file_path)
         target = "/".join([APP_ROOT,"uploaded"])
-        
-        
-        print(target)
         target = "/".join([target,session['email']])
-        # if(full_path!="/"):
-        target = "".join([target,full_path])
-        final_path = "/".join([target,f_name])
+        final_path = "".join([target,file_path])
+        # dest_path = request.form["dest_path"]
+        # print("received dest_path ",dest_path)
+        # full_path = ""
+        # if(dest_path!=""):
+        #     full_path = db_obj.get_folder_path(int(dest_path))
+        # print("after query completes ")
+        # #f_name = request.args.get('f_name')
+        # print("please dload ",f_name," from ",full_path)
+        # print("app root is ",APP_ROOT)
+        # target = "/".join([APP_ROOT,"uploaded"])
+        
+        
+        # print(target)
+        # target = "/".join([target,session['email']])
+        # # if(full_path!="/"):
+        # target = "".join([target,full_path])
+        # final_path = "/".join([target,f_name])
         
         print "For download: ",final_path
         #return final_path
@@ -298,20 +306,22 @@ def login():
             user_details = dict()
             user_details["email"] = attempted_email
             #user_details["name"] = "Tarun"
-            user_details["password"] = attempted_pwd  
-            print("Debug 3")     
+            user_details["password"] = attempted_pwd
+            #db_obj.authenticate_user(user_details)        
 
             #if(attempted_email=="chitta.vssut@gmail.com" and attempted_pwd=="123"):
             if(db_obj.authenticate_user(user_details)):
                 print("Authentication success!")
                 session['email'] = attempted_email
                 session['id'] = db_obj.get_user_id(attempted_email)
+                print("while setting session id ",session['id'])
                 print("In login session id: {0}".format(session['id']))
                 return redirect(url_for('view'))
             else:
                 print("Authentication Fail!")
                 error = "Invalid try again"
-                return render_template('login.html',title='login',error=error)
+                print("invalid user")
+                return render_template('login.html',title='login',wrongPassword=error)
     except Exception as e:
         flash(e)
         return render_template('login.html',title='login',error=error)

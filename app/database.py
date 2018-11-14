@@ -74,6 +74,8 @@ def authenticate_user(db_cursor, user_details):
   query_string = "select EMAIL, PASSWORD from user where EMAIL='"+given_email_id+"'"
   db_cursor.execute(query_string)
   result_tuple = db_cursor.fetchone()
+  if result_tuple is None or len(result_tuple) <= 0:
+    return False
   passwd_hash = result_tuple[1]
   m = hashlib.sha256()
   m.update(given_passwd)
@@ -264,7 +266,7 @@ def get_folder_path(db_cursor, folder_id):
   curr_folder_id = folder_id
   full_path = ""
   while curr_folder_id is not None:
-    print("In get folder path: ",curr_folder_id)
+    #print("In get folder path: ",curr_folder_id)
     query_string = "select NAME,PATH from folder where ID='"+str(curr_folder_id)+"'"
     db_cursor.execute(query_string)
     print("After execute")
@@ -276,7 +278,7 @@ def get_folder_path(db_cursor, folder_id):
     else:
       full_path = str(result_tuple[0])+"/"+full_path
     curr_folder_id = result_tuple[1]
-    print("In get folder path: curr_folder_id "+str(curr_folder_id))
+    #print("In get folder path: curr_folder_id "+str(curr_folder_id))
   return full_path
   
 def modify_file_permission(db_obj, db_cursor, file_id, new_permission):
