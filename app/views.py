@@ -13,8 +13,8 @@ import threading
 #import dropboxdb
 #127.0.0.1 localhost
 lock=thread.allocate_lock()
-#db_obj = DropBoxDB("praveen","S@gem0de")
-db_obj = DropBoxDB("praveen","S@gem0de")
+#db_obj = DropBoxDB("ateam","password")
+db_obj = DropBoxDB("ateam","password")
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 @app.before_request
 def require_login():
@@ -25,7 +25,7 @@ def require_login():
 @app.route('/search/', methods = ['GET'])
 def search_files():
     s_string = request.args.get("search_string")
-    db_obj = DropBoxDB("praveen","S@gem0de")
+    db_obj = DropBoxDB("ateam","password")
     search_list = db_obj.search_files(session['id'], s_string)
     files = dict()
     files["files"] = search_list
@@ -33,17 +33,23 @@ def search_files():
     print(files)
     return json.dumps(files)
 
+@app.route('/used_space', methods=['GET'])
+def get_file_size():
+    db_obj = DropBoxDB("ateam","password")
+    file_size = db_obj.get_used_space(session['id'])
+    return str(file_size)
+
 
 @app.route('/delete_file/<id>/')
 def delete_file(id = None):
-    db_obj = DropBoxDB("praveen","S@gem0de")
+    db_obj = DropBoxDB("ateam","password")
     print("In delete file{0}".format(id))
     db_obj.delete_file(id)
     return
 
 @app.route('/delete_folder/<id>/')
 def delete_folder(id = None):
-    db_obj = DropBoxDB("praveen","S@gem0de")
+    db_obj = DropBoxDB("ateam","password")
     print("In delete folder {0}".format(id))
     db_obj.delete_folder(id)
     return
@@ -51,7 +57,7 @@ def delete_folder(id = None):
 @app.route('/move_file/', methods = ['GET', 'POST'])
 def move():
     if(request.method == "POST"):
-        db_obj = DropBoxDB("praveen","S@gem0de")
+        db_obj = DropBoxDB("ateam","password")
         print("In move file")
         src_id = request.form["src_id"]
         dest_id = request.form["dest_id"]
@@ -61,14 +67,14 @@ def move():
 
 @app.route('/get_folder_list/<id>/', methods = ['GET', 'POST'])
 def get_folder_entries(id = None):
-    db_obj = DropBoxDB("praveen","S@gem0de")
+    db_obj = DropBoxDB("ateam","password")
     print("In get folder list {0}".format(id))
     files = db_obj.get_folder_entries(id)
     return files["folders"]
 
 @app.route('/get_nav_context/<id>/', methods = ['GET', 'POST'])
 def get_nav_context(id = None):
-    db_obj = DropBoxDB("praveen","S@gem0de")
+    db_obj = DropBoxDB("ateam","password")
     print("In get nav list {0}".format(id))
     # lock.acquire()
     files = db_obj.get_navigation_context(int(id))
@@ -83,14 +89,14 @@ def view(id=None):
     session['id'] = 1
     if(id == None):
         # lock.acquire()
-        db_obj = DropBoxDB("praveen","S@gem0de")
+        db_obj = DropBoxDB("ateam","password")
         files = db_obj.get_folder_entries(db_obj.get_root_path_id(session["id"]))
         # lock.release()
         # print(files)
         return Response(render_template('homePage.html', data=files))
     else:
         # lock.acquire()
-        db_obj = DropBoxDB("praveen","S@gem0de")
+        db_obj = DropBoxDB("ateam","password")
         files = db_obj.get_folder_entries(int(id))
         # lock.release()
         # print(files)
@@ -123,7 +129,7 @@ def homePage():
 
 @app.route('/download/', methods = ['GET', 'POST'])
 def download():
-    db_obj = DropBoxDB("praveen","S@gem0de")
+    db_obj = DropBoxDB("ateam","password")
     if(request.method == "POST"):
     #if(True):
         print("In dload file")
@@ -158,7 +164,7 @@ def download():
 
 @app.route("/upload", methods=['GET','POST'])
 def upload():
-    db_obj = DropBoxDB("praveen","S@gem0de")
+    db_obj = DropBoxDB("ateam","password")
     print("app root is ",APP_ROOT)
     target = "/".join([APP_ROOT,"uploaded"])
     #target = APP_ROOT
@@ -211,7 +217,7 @@ def about():
 
 @app.route("/changepassword/",methods=['GET','POST'])
 def changepassword():
-    db_obj = DropBoxDB("praveen","S@gem0de")
+    db_obj = DropBoxDB("ateam","password")
     user_details = dict()
     user_details["email"] = session['email']
     
@@ -226,7 +232,7 @@ def changepassword():
 
 @app.route("/createFolder/",methods=['GET','POST'])
 def createFolder():
-    db_obj = DropBoxDB("praveen","S@gem0de")
+    db_obj = DropBoxDB("ateam","password")
     folder_details = dict()
     folder_details['name'] = request.form['foldername']
     print folder_details['name']
@@ -241,7 +247,7 @@ def createFolder():
 
 @app.route("/register", methods=['GET','POST'])
 def register():
-    db_obj = DropBoxDB("praveen","S@gem0de")
+    db_obj = DropBoxDB("ateam","password")
     error=''
     try:
         if(request.method == "POST"):
@@ -250,7 +256,7 @@ def register():
             to_register_email = request.form["email"]
             print("in register 2")
             print(to_register_email)
-            to_register_pwd = request.form['S@gem0de']
+            to_register_pwd = request.form['password']
             print("in register 3")
             print(to_register_pwd)
             to_register_name = request.form['name']
@@ -261,7 +267,7 @@ def register():
             print(to_register_name)
             user_details["email"] = to_register_email
             user_details["name"] = to_register_name
-            user_details["S@gem0de"] = to_register_pwd
+            user_details["password"] = to_register_pwd
             db_obj.create_user(user_details)
             flash(to_register_email)
             flash(to_register_name)
@@ -279,28 +285,19 @@ def register():
 
 @app.route("/login",methods=['GET','POST'])
 def login():
-    db_obj = DropBoxDB("praveen","S@gem0de")
+    db_obj = DropBoxDB("ateam","password")
     error=''
     try:
         if(request.method == "POST"):
             attempted_email = request.form["email"]
-            attempted_pwd = request.form['S@gem0de']
+            attempted_pwd = request.form['password']
             flash(attempted_email)
             flash(attempted_pwd)
-            
-            #user_details = dict()
-            #user_details["email"] = "ab@gmail.com"
-            #user_details["name"] = "ab"
-            #user_details["S@gem0de"] = "ab"
-            #db_obj.create_user(user_details)
-
-          
-
 
             user_details = dict()
             user_details["email"] = attempted_email
             #user_details["name"] = "Tarun"
-            user_details["S@gem0de"] = attempted_pwd
+            user_details["password"] = attempted_pwd
             db_obj.authenticate_user(user_details)        
 
             #if(attempted_email=="chitta.vssut@gmail.com" and attempted_pwd=="123"):
