@@ -19,7 +19,7 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 @app.before_request
 def require_login():
     allowed_routes = ['login' , 'register']
-    if request.endpoint not in allowed_routes and 'email' not in session:
+    if request.endpoint not ifn allowed_routes and 'email' not in session:
         return redirect(url_for('login'))
 
 @app.route('/search/', methods = ['GET'])
