@@ -86,7 +86,7 @@ def get_nav_context(id = None):
 @app.route('/view/')
 @app.route('/view/<id>/')
 def view(id=None):
-    session['id'] = 1
+    #session['id'] = 1
     print("In view, id= {0}".format(id))
     if(id == None):
         # lock.acquire()
@@ -310,6 +310,7 @@ def login():
             #if(attempted_email=="chitta.vssut@gmail.com" and attempted_pwd=="123"):
             if(db_obj.authenticate_user(user_details)):
                 session['email'] = attempted_email
+                session['id'] = db_obj.get_user_id(attempted_email)
                 return redirect(url_for('view'))
             else:
                 error = "Invalid try again"
