@@ -250,7 +250,7 @@ def register():
             to_register_email = request.form["email"]
             print("in register 2")
             print(to_register_email)
-            to_register_pwd = request.form['S@gem0de']
+            to_register_pwd = request.form['password']
             print("in register 3")
             print(to_register_pwd)
             to_register_name = request.form['name']
@@ -261,7 +261,7 @@ def register():
             print(to_register_name)
             user_details["email"] = to_register_email
             user_details["name"] = to_register_name
-            user_details["S@gem0de"] = to_register_pwd
+            user_details["password"] = to_register_pwd
             db_obj.create_user(user_details)
             flash(to_register_email)
             flash(to_register_name)
@@ -284,7 +284,7 @@ def login():
     try:
         if(request.method == "POST"):
             attempted_email = request.form["email"]
-            attempted_pwd = request.form['S@gem0de']
+            attempted_pwd = request.form['password']
             flash(attempted_email)
             flash(attempted_pwd)
             
@@ -300,7 +300,7 @@ def login():
             user_details = dict()
             user_details["email"] = attempted_email
             #user_details["name"] = "Tarun"
-            user_details["S@gem0de"] = attempted_pwd
+            user_details["password"] = attempted_pwd
             db_obj.authenticate_user(user_details)        
 
             #if(attempted_email=="chitta.vssut@gmail.com" and attempted_pwd=="123"):
