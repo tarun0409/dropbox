@@ -253,6 +253,7 @@ def get_folder_path(db_cursor, folder_id):
     print("In get folder path: ",curr_folder_id)
     query_string = "select NAME,PATH from folder where ID='"+str(curr_folder_id)+"'"
     db_cursor.execute(query_string)
+    print("After execute")
     result_tuple = db_cursor.fetchone()
     if result_tuple[0] == "/":
       full_path = "/"+full_path

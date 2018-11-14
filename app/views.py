@@ -25,12 +25,14 @@ def require_login():
 
 @app.route('/delete_file/<id>/')
 def delete_file(id = None):
+    db_obj = DropBoxDB("testuser","password")
     print("In delete file{0}".format(id))
     db_obj.delete_file(id)
     return
 
 @app.route('/delete_folder/<id>/')
 def delete_folder(id = None):
+    db_obj = DropBoxDB("testuser","password")
     print("In delete folder {0}".format(id))
     db_obj.delete_folder(id)
     return
@@ -38,6 +40,7 @@ def delete_folder(id = None):
 @app.route('/move_file/', methods = ['GET', 'POST'])
 def move():
     if(request.method == "POST"):
+        db_obj = DropBoxDB("testuser","password")
         print("In move file")
         src_id = request.form["src_id"]
         dest_id = request.form["dest_id"]
@@ -47,16 +50,18 @@ def move():
 
 @app.route('/get_folder_list/<id>/', methods = ['GET', 'POST'])
 def get_folder_entries(id = None):
+    db_obj = DropBoxDB("testuser","password")
     print("In get folder list {0}".format(id))
     files = db_obj.get_folder_entries(id)
     return files["folders"]
 
 @app.route('/get_nav_context/<id>/', methods = ['GET', 'POST'])
 def get_nav_context(id = None):
+    db_obj = DropBoxDB("testuser","password")
     print("In get nav list {0}".format(id))
-    lock.acquire()
+    # lock.acquire()
     files = db_obj.get_navigation_context(int(id))
-    lock.release()
+    # lock.release()
     return json.dumps(files)
 
 
@@ -66,15 +71,17 @@ def get_nav_context(id = None):
 def view(id=None):
     session['id'] = 1
     if(id == None):
-        lock.acquire()
+        # lock.acquire()
+        db_obj = DropBoxDB("testuser","password")
         files = db_obj.get_folder_entries(db_obj.get_root_path_id(session["id"]))
-        lock.release()
+        # lock.release()
         # print(files)
         return Response(render_template('homePage.html', data=files))
     else:
-        lock.acquire()
+        # lock.acquire()
+        db_obj = DropBoxDB("testuser","password")
         files = db_obj.get_folder_entries(int(id))
-        lock.release()
+        # lock.release()
         # print(files)
         return json.dumps(files)
 
@@ -105,6 +112,7 @@ def homePage():
 
 @app.route('/download/', methods = ['GET', 'POST'])
 def download():
+    db_obj = DropBoxDB("testuser","password")
     if(request.method == "POST"):
     #if(True):
         print("In dload file")
@@ -139,6 +147,7 @@ def download():
 
 @app.route("/upload", methods=['GET','POST'])
 def upload():
+    db_obj = DropBoxDB("testuser","password")
     print("app root is ",APP_ROOT)
     target = "/".join([APP_ROOT,"uploaded"])
     #target = APP_ROOT
@@ -191,6 +200,7 @@ def about():
 
 @app.route("/changepassword/",methods=['GET','POST'])
 def changepassword():
+    db_obj = DropBoxDB("testuser","password")
     user_details = dict()
     user_details["email"] = session['email']
     
@@ -205,6 +215,7 @@ def changepassword():
 
 @app.route("/createFolder/",methods=['GET','POST'])
 def createFolder():
+    db_obj = DropBoxDB("testuser","password")
     folder_details = dict()
     folder_details['name'] = request.form['foldername']
     print folder_details['name']
@@ -219,6 +230,7 @@ def createFolder():
 
 @app.route("/register", methods=['GET','POST'])
 def register():
+    db_obj = DropBoxDB("testuser","password")
     error=''
     try:
         if(request.method == "POST"):
@@ -256,6 +268,7 @@ def register():
 
 @app.route("/login",methods=['GET','POST'])
 def login():
+    db_obj = DropBoxDB("testuser","password")
     error=''
     try:
         if(request.method == "POST"):
