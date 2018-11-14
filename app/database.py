@@ -207,7 +207,13 @@ def search_files(db_cursor, user_id, search_string):
     file_details["name"] = str(result_tuple[1])
     file_details["path"] = str(get_file_path(db_cursor, result_tuple[0]))
     file_details["size"] = result_tuple[3]
-    file_details["owner"] = result_tuple[4]
+    owner_string = "select * from user where ID='"+str(result_tuple[4])+"'"
+    db_cursor.execute(owner_string)
+    rt = db_cursor.fetchone()
+    owner_obj = dict()
+    owner_obj["id"] = rt[0]
+    owner_obj["name"] = rt[1]
+    file_details["owner"] = owner_obj
     file_details["permission"] = str(result_tuple[5])
     file_entries.append(file_details)
   query_string = "select * from file where NAME like '%"+search_string+"%' and OWNER!='"+str(user_id)+"' and PERMISSION='public'"
@@ -219,7 +225,13 @@ def search_files(db_cursor, user_id, search_string):
     file_details["name"] = str(result_tuple[1])
     file_details["path"] = str(get_file_path(db_cursor, result_tuple[0]))
     file_details["size"] = result_tuple[3]
-    file_details["owner"] = result_tuple[4]
+    owner_string = "select * from user where ID='"+str(result_tuple[4])+"'"
+    db_cursor.execute(owner_string)
+    rt = db_cursor.fetchone()
+    owner_obj = dict()
+    owner_obj["id"] = rt[0]
+    owner_obj["name"] = rt[1]
+    file_details["owner"] = owner_obj
     file_details["permission"] = str(result_tuple[5])
     file_entries.append(file_details)
   return file_entries
