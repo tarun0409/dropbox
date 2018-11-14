@@ -20,7 +20,7 @@
             $('#fileupload').click();
             console.log("checkin");
         }
-
+        
         update_size = function(){
             url = "/used_space";
             $.get(url, function(data)
@@ -61,7 +61,7 @@
         
         $(document).ready(function() {
             update_size();
-
+            
             $('input[type=submit]').hide();
             var click_id = "";
             var click_type = "";
@@ -73,11 +73,13 @@
             
             $.get("/get_root_path/", function(data) {
                 curr_page_id = data;
+                console.log("Base path id" + curr_page_id)
                 var list = $('#nav-bar');
                 console.log(list);
                 list.empty();
                 console.log(data);
                 list.append("<li class=\"breadcrumb-item\"><label class=\"nav-id\" style=\"display:none\">" + data + "</label><a href=\"#\"class=\"nav-button\">DropBox Home</a></li>");
+                $("#pathID").val(curr_page_id);
             });
             
             // Delete row on delete button click
@@ -299,477 +301,477 @@
                             "<select class=\"form-control\" id=\"Permission\">" + 
                                 "<option>Public</option>" +
                                 "<option>Private</option>" +
-                            "</select>" +
-                        "</td>" +
-                        "<td scope=\"row\" class=\"user col-3\">" + row["owner"]["name"] + "</td>" +
-                        "<td class=\"col-1\">\
-                            <li class=\"dropdown\">\
-                                <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\"\
-                                aria-haspopup=\"true\" aria-expanded=\"false\">...<span class=\"caret\"></span></a>\
-                                <ul class=\"dropdown-menu\">\
-                                    <li><a href=\"#\" class=\"delete\">delete</a></li>\
-                                    <li><a href=\"#\" class=\"download\">download</a></li>\
-                                    <li><a href=\"#\" class=\"move\">Move</a></li>\
-                                </ul>\
-                            </li>\
-                        </td>" +
-                        "</tr>");
-                    });
-                    
-                    
-                    $.each(data["folders"], function(i, row) {
-                        list.append("<tr>" +
-                            "<td scope=\"row\" class=\"id\" hidden>" + row["id"] + "</a></td>" +
-                            "<td class=\"type\" hidden>Folder</td>" +
-                            "<td class=\"col-1\"><i class=\"material-icons\">folder</i></td>" + 
-                            "<td class=\"col-4\"><a href=\"#\" class=\"name\">" + row["name"] + "</a></td>" +
-                            "<td class=\"col-3\">-</td>" +
-                            "<td scope=\"row\" class=\"user col-3\">" + row["owner"]["name"] + "</td>" +
-                            "<td class=\"col-1\">\
-                                <li class=\"dropdown\">\
-                                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\"\
-                                    aria-haspopup=\"true\" aria-expanded=\"false\">...<span class=\"caret\"></span></a>\
-                                    <ul class=\"dropdown-menu\">\
-                                        <li><a href=\"#\" class=\"delete\">delete</a></li>\
-                                        <li><a href=\"#\" class=\"download\">download</a></li>\
-                                        <li><a href=\"#\" class=\"move\">Move</a></li>\
-                                    </ul>\
-                                </li>\
-                            </td>" +
-                            "</tr>");
-                        });
-                    }
-                    
-                    //For dropdown toggle
-                    $(document).on("click", ".dropdown-toggle", function() {
-                        // console.log("in dropdown click");
-                        click_id = $(this).parents("tr").children(".id").html();
-                        click_type = $(this).parents("tr").children(".type").html();
-                        console.log("click id " + click_id);
-                        console.log("click type " + click_type);
-                        // console.log(this);
-                    });
-                    
-                    
-                    //Getting current folder list
-                    function getFolderList() {
-                        var TableData = new Map(); //initialize map;
-                        
-                        //Here traverse and  read input/select values present in each td of each tr, ;
-                        $("table#data > tbody > tr").each(function(row, tr) {
-                            id = $(this).find("td.id").text();
-                            type = $(this).find("td.type").text();
-                            name = $(this).find(".name").text();
-                            if (type == "Folder") {
-                                TableData[id] = name;
-                            }
-                        });
-                        return TableData;
-                    }
-                    
-                    //get folder list of the given folder id
-                    function getFolderEntries(id) {
-                        var TableData = new Map();
-                        $.get("/get_folder_list/" + id + "/", function(data) {
-                            return data;
-                        });
-                    }
-                    
-                    $('#exampleModal').on('show.bs.modal', function(event) {
-                        var button = $(event.relatedTarget);
-                        var recipient = button.data('whatever')
-                        var modal = $(this)
-                        folders = getFolderList();
-                        curr_folder_id = sessionStorage.getItem('curr_folder_id');
-                        curr_folder_name = sessionStorage.getItem('curr_folder_name');
-                        folders = getFolderList(curr_folder_id);
-                        console.log(folders);
-                        list = modal.find('.list-group');
-                        list.empty();
-                        Object.keys(folders).forEach(function(key) {
-                            value = folders[key];
-                            console.log("In modal folder id " + key + "click id " + click_id);
-                            if ((click_type == "Folder" && key != click_id) || click_type != "Folder") {
-                                list.append("<tr><td class=\"id\">" + key + "</td><td><button type=\"button\" class=\"list-group-item list-group-item-action modal_button\">" + value + "</button></td>");
-                                }
+                                "</select>" +
+                                "</td>" +
+                                "<td scope=\"row\" class=\"user col-3\">" + row["owner"]["name"] + "</td>" +
+                                "<td class=\"col-1\">\
+                                    <li class=\"dropdown\">\
+                                        <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\"\
+                                        aria-haspopup=\"true\" aria-expanded=\"false\">...<span class=\"caret\"></span></a>\
+                                        <ul class=\"dropdown-menu\">\
+                                            <li><a href=\"#\" class=\"delete\">delete</a></li>\
+                                            <li><a href=\"#\" class=\"download\">download</a></li>\
+                                            <li><a href=\"#\" class=\"move\">Move</a></li>\
+                                        </ul>\
+                                    </li>\
+                                </td>" +
+                                "</tr>");
                             });
-                        });
-                        
-                        $(document).on("click", "#btnFolderCreate", function() {
-                            console.log("in modal sub button");
-                            var bla = $('#inputFolderName').val();
-                            console.log(bla);
-                            url = "/createFolder/";
-                            $.post(url, {
-                                foldername: bla,
-                                pathID: curr_page_id
+                            
+                            
+                            $.each(data["folders"], function(i, row) {
+                                list.append("<tr>" +
+                                    "<td scope=\"row\" class=\"id\" hidden>" + row["id"] + "</a></td>" +
+                                    "<td class=\"type\" hidden>Folder</td>" +
+                                    "<td class=\"col-1\"><i class=\"material-icons\">folder</i></td>" + 
+                                    "<td class=\"col-4\"><a href=\"#\" class=\"name\">" + row["name"] + "</a></td>" +
+                                    "<td class=\"col-3\">-</td>" +
+                                    "<td scope=\"row\" class=\"user col-3\">" + row["owner"]["name"] + "</td>" +
+                                    "<td class=\"col-1\">\
+                                        <li class=\"dropdown\">\
+                                            <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\"\
+                                            aria-haspopup=\"true\" aria-expanded=\"false\">...<span class=\"caret\"></span></a>\
+                                            <ul class=\"dropdown-menu\">\
+                                                <li><a href=\"#\" class=\"delete\">delete</a></li>\
+                                                <li><a href=\"#\" class=\"download\">download</a></li>\
+                                                <li><a href=\"#\" class=\"move\">Move</a></li>\
+                                            </ul>\
+                                        </li>\
+                                    </td>" +
+                                    "</tr>");
+                                });
+                            }
+                            
+                            //For dropdown toggle
+                            $(document).on("click", ".dropdown-toggle", function() {
+                                // console.log("in dropdown click");
+                                click_id = $(this).parents("tr").children(".id").html();
+                                click_type = $(this).parents("tr").children(".type").html();
+                                console.log("click id " + click_id);
+                                console.log("click type " + click_type);
+                                // console.log(this);
                             });
-                            console.log("Afterpost ");
-                        }),
-                        
-                        $(document).on("click", "#changepassword", function() {
-                            console.log("in change func");
-                            var oldp = $('#oldpassword').val();
-                            var newp = $('#newpassword').val();
-                            var newcp = $('#confirmnewpassword').val();
-                            console.log(oldp);
-                            console.log(newp);
-                            console.log(newcp);
                             
-                            if (!oldp || !newp || !newcp) {
-                                alert("Fill all fields!");
-                                return;
+                            
+                            //Getting current folder list
+                            function getFolderList() {
+                                var TableData = new Map(); //initialize map;
+                                
+                                //Here traverse and  read input/select values present in each td of each tr, ;
+                                $("table#data > tbody > tr").each(function(row, tr) {
+                                    id = $(this).find("td.id").text();
+                                    type = $(this).find("td.type").text();
+                                    name = $(this).find(".name").text();
+                                    if (type == "Folder") {
+                                        TableData[id] = name;
+                                    }
+                                });
+                                return TableData;
                             }
                             
-                            if (newp != newcp) {
-                                alert("Passwords don't match!");
-                                return;
-                                
+                            //get folder list of the given folder id
+                            function getFolderEntries(id) {
+                                var TableData = new Map();
+                                $.get("/get_folder_list/" + id + "/", function(data) {
+                                    return data;
+                                });
                             }
                             
-                            
-                            // var new = "sample1";
-                            // var re = new RegExp("(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}");
-                            
-                            // console.log(newp);
-                            // if (!(re.test(newp))) {
-                                //     alert("Password must contain at least 5 characters. Atleast one upper, one lowercase and one digit");
-                                //     return;
-                                // }
-                                
-                                url = "/changepassword/";
-                                $.post(url, {
-                                    oldpassword: oldp,
-                                    newpassword: newp
+                            $('#exampleModal').on('show.bs.modal', function(event) {
+                                var button = $(event.relatedTarget);
+                                var recipient = button.data('whatever')
+                                var modal = $(this)
+                                folders = getFolderList();
+                                curr_folder_id = sessionStorage.getItem('curr_folder_id');
+                                curr_folder_name = sessionStorage.getItem('curr_folder_name');
+                                folders = getFolderList(curr_folder_id);
+                                console.log(folders);
+                                list = modal.find('.list-group');
+                                list.empty();
+                                Object.keys(folders).forEach(function(key) {
+                                    value = folders[key];
+                                    console.log("In modal folder id " + key + "click id " + click_id);
+                                    if ((click_type == "Folder" && key != click_id) || click_type != "Folder") {
+                                        list.append("<tr><td class=\"id\">" + key + "</td><td><button type=\"button\" class=\"list-group-item list-group-item-action modal_button\">" + value + "</button></td>");
+                                        }
+                                    });
                                 });
                                 
-                                console.log("After change password ");
+                                $(document).on("click", "#btnFolderCreate", function() {
+                                    console.log("in modal sub button");
+                                    var bla = $('#inputFolderName').val();
+                                    console.log(bla);
+                                    url = "/createFolder/";
+                                    $.post(url, {
+                                        foldername: bla,
+                                        pathID: curr_page_id
+                                    });
+                                    console.log("Afterpost ");
+                                }),
                                 
-                                
-                            });
+                                $(document).on("click", "#changepassword", function() {
+                                    console.log("in change func");
+                                    var oldp = $('#oldpassword').val();
+                                    var newp = $('#newpassword').val();
+                                    var newcp = $('#confirmnewpassword').val();
+                                    console.log(oldp);
+                                    console.log(newp);
+                                    console.log(newcp);
+                                    
+                                    if (!oldp || !newp || !newcp) {
+                                        alert("Fill all fields!");
+                                        return;
+                                    }
+                                    
+                                    if (newp != newcp) {
+                                        alert("Passwords don't match!");
+                                        return;
+                                        
+                                    }
+                                    
+                                    
+                                    // var new = "sample1";
+                                    // var re = new RegExp("(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}");
+                                    
+                                    // console.log(newp);
+                                    // if (!(re.test(newp))) {
+                                        //     alert("Password must contain at least 5 characters. Atleast one upper, one lowercase and one digit");
+                                        //     return;
+                                        // }
+                                        
+                                        url = "/changepassword/";
+                                        $.post(url, {
+                                            oldpassword: oldp,
+                                            newpassword: newp
+                                        });
+                                        
+                                        console.log("After change password ");
+                                        
+                                        
+                                    });
+                                    
+                                });
+                            </script>
+                            <!-- <script src="{{ url_for('static',filename = 'validate.js') }}"></script> -->
                             
-                        });
-                    </script>
-                    <!-- <script src="{{ url_for('static',filename = 'validate.js') }}"></script> -->
-                    
-                </head>
-                
-                <div class="modal fade" id="changepasswordmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Password Change</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                
-                                <ul class="list-group" style="background-color:whitesmoke">
-                                    
-                                    <li class="list-group-item">
-                                        <input type="password" class="form-control" style="width: 100%" id="oldpassword" placeholder="Old password">
-                                        
-                                    </li>
-                                    
-                                    <li class="list-group-item">
-                                        <input type="password" class="form-control" style="width: 100%" id="newpassword" placeholder="New password">
-                                        
-                                    </li>
-                                    
-                                    <li class="list-group-item">
-                                        
-                                        <input type="password" class="form-control" style="width: 100%" id="confirmnewpassword" placeholder="Confirm new password">
-                                    </li>
-                                    
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" id="changepassword" class="btn btn-primary">Change Password</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Enter folder name</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <input type="text" style="width: 100%" id="inputFolderName">
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" id="btnFolderCreate" class="btn btn-primary">Create folder</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">New message</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                
-                                <div class="modal-body">
-                                    <div class="modal-data">
-                                        <!-- <ul class="modal-list" id="move-list">
-                                        </ul> -->
-                                        <div class="list-group">
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Move</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <body>
+                        </head>
                         
-                        <div class="container-fluid">
-                            <!-- <h2>Homepage</h2> -->
-                            
-                            <nav class="navbar fixed-top navbar-dark bg-primary">
-                                <a class="navbar-brand" href="#!">DropBox</a>
-                                <div class="dropdown dropleft">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Settings
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changepasswordmodal">
-                                            Create folder
-                                        </button> -->
-                                        <a class="dropdown-item" data-toggle="modal" href="#changepasswordmodal">Change Password</a>
-                                        <!-- <a class="dropdown-item" href="#!" data-target="#changepasswordmodal">Change password</a> -->
-                                        <a class="dropdown-item" href="/logout">Logout</a>
-                                    </div>
-                                </div>
-                                
-                            </nav>
-                            <br>
-                            <br>
-                            
-                            <div class="main">
-                                
-                                <div class="input-group">
-                                    <input autocomplete="on" type="text" class="form-control" id="search_bar" placeholder="Search files">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-secondary" type="button" id="search_button">
-                                            <i class="fa fa-search"></i>
+                        <div class="modal fade" id="changepasswordmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Password Change</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
+                                    <div class="modal-body">
+                                        
+                                        <ul class="list-group" style="background-color:whitesmoke">
+                                            
+                                            <li class="list-group-item">
+                                                <input type="password" class="form-control" style="width: 100%" id="oldpassword" placeholder="Old password">
+                                                
+                                            </li>
+                                            
+                                            <li class="list-group-item">
+                                                <input type="password" class="form-control" style="width: 100%" id="newpassword" placeholder="New password">
+                                                
+                                            </li>
+                                            
+                                            <li class="list-group-item">
+                                                
+                                                <input type="password" class="form-control" style="width: 100%" id="confirmnewpassword" placeholder="Confirm new password">
+                                            </li>
+                                            
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" id="changepassword" class="btn btn-primary">Change Password</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
-                        </div>
-                        
-                        
-                        
-                        
-                        <div class="row">
-                            <div class="col-2 firstColumn">
-                                <br>
-                                <br>
-                                <ul>
-                                    
-                                    <li>
-                                        
-                                        <a href="#">Files</a>
-                                    </li>
-                                    
-                                    
-                                </ul>
-                                
-                            </div>
-                            <div class="col-8 secondColumn">
-                                
-                                <!-- <table class="table">
-                                    
-                                    <thead>
-                                        <tr class="d-flex">
-                                            <th class="col-3">25</th>
-                                            <th class="col-3">25</th>
-                                            <th class="col-6">50</th>
-                                        </tr>
-                                    </thead>
-                                    
-                                    <tr class="active d-flex">
-                                        <th class="col-1"></th>
-                                        
-                                        <th class="col-6">Filename</th>
-                                        <th class="col-3">Type</th>
-                                        <th class="col-2">(buttons)</th>
-                                    </tr>
-                                    
-                                    <tr class="d-flex">
-                                        <td class="col-1"> <i class="material-icons">file_copy</i></td>
-                                        <td class="col-6">
-                                            a.txt
-                                        </td>
-                                        <td class="col-3">
-                                            Public
-                                            <ul style="padding-left:15px">
-                                                <li>Site Quality and Lean Head, USA based Aerospace company</li>          
-                                            </ul>
-                                        </td>
-                                        <td class="col-2">(temp)</td>
-                                    </tr>
-                                    <tr class="d-flex">
-                                        <td class="col-1"><i class="material-icons">folder</i></td>
-                                        <td class="col-6">
-                                            Folder1
-                                        </td>
-                                        <td class="col-3">
-                                            Private
-                                            <ul style="padding-left:15px">
-                                                <li>Software Engineer</li>          
-                                            </ul>
-                                        </td>
-                                        <td class="col-2">(temp)</td>
-                                        
-                                    </tr>
-                                </table> -->
-                                <nav class="page-header-text u-l-fl" id="path-breadcrumbs" aria-label="Folder hierarchy" role="navigation">
-                                    <nav aria-label="breadcrumb">
-                                        <ol class="breadcrumb" id="nav-bar">
-                                            <li class="breadcrumb-item"><label style="display:none">d</label><a href="http://127.0.0.1:5000/view/">Home</a></li>
-                                        </ol>
-                                    </nav>
-                                </nav>
-                                <table class="table table-hover" id="data">
-                                    <thead>
-                                        <tr class="active">
-                                            <th scope="col" hidden>ID</th>
-                                            <th scope="col" hidden>Type</th>
-                                            <th class="col-1" scope="col"></th>
-                                            <th class="col-4" scope="col">Name</th>
-                                            <th class="col-3" scope="col">Permission</th>
-                                            <th class="col-3" scope="col">User</th>
-                                            <th class="col-1" scope="col"></th>  
-                                        </tr>
-                                    </thead>
-                                    
-                                    <tbody id="tdata">
-                                        {% for row in data["files"] %}
-                                        <tr>
-                                            <td scope="row" class="id" hidden>{{row["id"]}}</td>
-                                            <td class="type" hidden>File</td>
-                                            <td class="col-1"><i class="material-icons">file_copy</i></td>
-                                            <td class="col-4"><a href="#" class="name">{{row["name"]}}</a></td>
-                                            <td class="col-3">
-                                                <select class="form-control" id="Permission">
-                                                    <option>Public</option>
-                                                    <option>Private</option>
-                                                </select>
-                                            </td>
-                                            <td scope="row" class="user col-3">{{row["owner"]["name"]}}</td>
-                                            <td class="col-1">
-                                                <li class="dropdown">
-                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
-                                                    <ul class="dropdown-menu">
-                                                        <li><a href="#" class="delete">delete</a></li>
-                                                        <li><a href="#" class="download">download</a></li>
-                                                        <li><a href="#" class="move">Move</a></li>
-                                                        <!-- <li><a href="#" class="move" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">move</a></li> -->
-                                                    </ul>
-                                                </li>
-                                            </td>
-                                        </tr>
-                                        {% endfor %} {% for row in data["folders"] %}
-                                        <tr>
-                                            <td scope="row" class="id" hidden>{{row["id"]}}</td>
-                                            <td class="type" hidden>Folder</td>
-                                            <td class="col-1"><i class="material-icons">folder</i></td>
-                                            <td class="col-4"><a href="#" class="name">{{row["name"]}}</a></td>
-                                            <td class="col-3">-</td>
-                                            <td scope="row" class="user col-3">{{row["owner"]["name"]}}</td>
-                                            <td class="col-1">
-                                                <li class="dropdown">
-                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
-                                                    <ul class="dropdown-menu">
-                                                        <li><a href="#" class="delete">delete</a></li>
-                                                        <li><a href="#" class="download">download</a></li>
-                                                        <li><a href="#" class="move">Move</a></li>
-                                                        <!-- <li><a href="#" class="move" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">move</a></li> -->
-                                                    </ul>
-                                                </li>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                    
-                                    <form action="/download/" method="POST" id="fid">
-                                        <input type="hidden" id="f_name" name="f_name" value="">
-                                        <input type="hidden" id="dest_path" name="dest_path" value="">
-                                        <input type="submit" value="Submit">
-                                    </form>
-                                    <!-- <a href="{{ url_for('download', f_name='file1.txt'  ) }} " target="blank" class="cssbuttongo">
-                                        
-                                    </a> 
-                                -->
-                            </table>
-                        </div>
-                        
-                        
-                        <div class="col-2 thirdColumn">
-                            <br>
-                            <br>
-                            <ul class="list-group">
-                                
-                                <li class="list-group-item" id="forWhiteSmoke">
-                                    
-                                    <a>Size used :</a>
-                                    <label id="used_size"></label>
-                                </li>
-                                
-                                <li class="list-group-item" id="forWhiteSmoke">
-                                    
-                                    <form class="md-form" id="uploadform" action="{{url_for('upload')}}" method="POST" enctype="multipart/form-data">
-                                        <div class="file-field">
-                                            <input type="file" style="display:none" id="fileupload" name="file" onchange="form.submit()" accept="" multiple>
-                                            <button type="button" id="btnUpload" class="btn btn-primary" onclick="clickUpload()">Upload</button>
-                                            <input type="hidden" name="pathID" id="pathID" class="pathid" value="">
-                                            
-                                            
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Enter folder name</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
                                         </div>
-                                    </form>
-                                    
-                                </li>
-                                <li class="list-group-item" id="forWhiteSmoke">
-                                    
-                                    
-                                    
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                        Create folder
-                                    </button>
-                                </li>
-                                <li class="list-group-item" id="forWhiteSmoke">
-                                    
-                                    
-                                    
-                                    <button type="button" class="btn btn-primary movehere" id="moveherebtn" style="display:none;">
-                                        Move Here
-                                    </button>
-                                </li>
-                            </ul>
+                                        <div class="modal-body">
+                                            <input type="text" style="width: 100%" id="inputFolderName">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" id="btnFolderCreate" class="btn btn-primary">Create folder</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="modal-body">
+                                            <div class="modal-data">
+                                                <!-- <ul class="modal-list" id="move-list">
+                                                </ul> -->
+                                                <div class="list-group">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Move</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <body>
+                                
+                                <div class="container-fluid">
+                                    <!-- <h2>Homepage</h2> -->
+                                    
+                                    <nav class="navbar fixed-top navbar-dark bg-primary">
+                                        <a class="navbar-brand" href="#!">DropBox</a>
+                                        <div class="dropdown dropleft">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Settings
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changepasswordmodal">
+                                                    Create folder
+                                                </button> -->
+                                                <a class="dropdown-item" data-toggle="modal" href="#changepasswordmodal">Change Password</a>
+                                                <!-- <a class="dropdown-item" href="#!" data-target="#changepasswordmodal">Change password</a> -->
+                                                <a class="dropdown-item" href="/logout">Logout</a>
+                                            </div>
+                                        </div>
+                                        
+                                    </nav>
+                                    <br>
+                                    <br>
+                                    
+                                    <div class="main">
+                                        
+                                        <div class="input-group">
+                                            <input autocomplete="on" type="text" class="form-control" id="search_bar" placeholder="Search files">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-secondary" type="button" id="search_button">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                
+                                
+                                
+                                
+                                <div class="row">
+                                    <div class="col-2 firstColumn">
+                                        <br>
+                                        <br>
+                                        <ul>
+                                            
+                                            <li>
+                                                
+                                                <a href="#">Files</a>
+                                            </li>
+                                            
+                                            
+                                        </ul>
+                                        
+                                    </div>
+                                    <div class="col-8 secondColumn">
+                                        
+                                        <!-- <table class="table">
+                                            
+                                            <thead>
+                                                <tr class="d-flex">
+                                                    <th class="col-3">25</th>
+                                                    <th class="col-3">25</th>
+                                                    <th class="col-6">50</th>
+                                                </tr>
+                                            </thead>
+                                            
+                                            <tr class="active d-flex">
+                                                <th class="col-1"></th>
+                                                
+                                                <th class="col-6">Filename</th>
+                                                <th class="col-3">Type</th>
+                                                <th class="col-2">(buttons)</th>
+                                            </tr>
+                                            
+                                            <tr class="d-flex">
+                                                <td class="col-1"> <i class="material-icons">file_copy</i></td>
+                                                <td class="col-6">
+                                                    a.txt
+                                                </td>
+                                                <td class="col-3">
+                                                    Public
+                                                    <ul style="padding-left:15px">
+                                                        <li>Site Quality and Lean Head, USA based Aerospace company</li>          
+                                                    </ul>
+                                                </td>
+                                                <td class="col-2">(temp)</td>
+                                            </tr>
+                                            <tr class="d-flex">
+                                                <td class="col-1"><i class="material-icons">folder</i></td>
+                                                <td class="col-6">
+                                                    Folder1
+                                                </td>
+                                                <td class="col-3">
+                                                    Private
+                                                    <ul style="padding-left:15px">
+                                                        <li>Software Engineer</li>          
+                                                    </ul>
+                                                </td>
+                                                <td class="col-2">(temp)</td>
+                                                
+                                            </tr>
+                                        </table> -->
+                                        <nav class="page-header-text u-l-fl" id="path-breadcrumbs" aria-label="Folder hierarchy" role="navigation">
+                                            <nav aria-label="breadcrumb">
+                                                <ol class="breadcrumb" id="nav-bar">
+                                                    <li class="breadcrumb-item"><label style="display:none">d</label><a href="http://127.0.0.1:5000/view/">Home</a></li>
+                                                </ol>
+                                            </nav>
+                                        </nav>
+                                        <table class="table table-hover" id="data">
+                                            <thead>
+                                                <tr class="active">
+                                                    <th scope="col" hidden>ID</th>
+                                                    <th scope="col" hidden>Type</th>
+                                                    <th class="col-1" scope="col"></th>
+                                                    <th class="col-4" scope="col">Name</th>
+                                                    <th class="col-3" scope="col">Permission</th>
+                                                    <th class="col-3" scope="col">User</th>
+                                                    <th class="col-1" scope="col"></th>  
+                                                </tr>
+                                            </thead>
+                                            
+                                            <tbody id="tdata">
+                                                {% for row in data["files"] %}
+                                                <tr>
+                                                    <td scope="row" class="id" hidden>{{row["id"]}}</td>
+                                                    <td class="type" hidden>File</td>
+                                                    <td class="col-1"><i class="material-icons">file_copy</i></td>
+                                                    <td class="col-4"><a href="#" class="name">{{row["name"]}}</a></td>
+                                                    <td class="col-3">
+                                                        <select class="form-control" id="Permission">
+                                                            <option>Public</option>
+                                                            <option>Private</option>
+                                                        </select>
+                                                    </td>
+                                                    <td scope="row" class="user col-3">{{row["owner"]["name"]}}</td>
+                                                    <td class="col-1">
+                                                        <li class="dropdown">
+                                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
+                                                            <ul class="dropdown-menu">
+                                                                <li><a href="#" class="delete">delete</a></li>
+                                                                <li><a href="#" class="download">download</a></li>
+                                                                <li><a href="#" class="move">Move</a></li>
+                                                                <!-- <li><a href="#" class="move" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">move</a></li> -->
+                                                            </ul>
+                                                        </li>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %} {% for row in data["folders"] %}
+                                                <tr>
+                                                    <td scope="row" class="id" hidden>{{row["id"]}}</td>
+                                                    <td class="type" hidden>Folder</td>
+                                                    <td class="col-1"><i class="material-icons">folder</i></td>
+                                                    <td class="col-4"><a href="#" class="name">{{row["name"]}}</a></td>
+                                                    <td class="col-3">-</td>
+                                                    <td scope="row" class="user col-3">{{row["owner"]["name"]}}</td>
+                                                    <td class="col-1">
+                                                        <li class="dropdown">
+                                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">... <span class="caret"></span></a>
+                                                            <ul class="dropdown-menu">
+                                                                <li><a href="#" class="delete">delete</a></li>
+                                                                <li><a href="#" class="download">download</a></li>
+                                                                <li><a href="#" class="move">Move</a></li>
+                                                                <!-- <li><a href="#" class="move" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">move</a></li> -->
+                                                            </ul>
+                                                        </li>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                            
+                                            <form action="/download/" method="POST" id="fid">
+                                                <input type="hidden" id="f_name" name="f_name" value="">
+                                                <input type="hidden" id="dest_path" name="dest_path" value="">
+                                                <input type="submit" value="Submit">
+                                            </form>
+                                            <!-- <a href="{{ url_for('download', f_name='file1.txt'  ) }} " target="blank" class="cssbuttongo">
+                                                
+                                            </a> 
+                                        -->
+                                    </table>
+                                </div>
+                                
+                                
+                                <div class="col-2 thirdColumn">
+                                    <br>
+                                    <br>
+                                    <ul class="list-group">
+                                        
+                                        <li class="list-group-item" id="forWhiteSmoke">
+                                            
+                                            <a>Size used :</a>
+                                            <label id="used_size"></label>
+                                        </li>
+                                        
+                                        <li class="list-group-item" id="forWhiteSmoke">
+                                            
+                                            <form class="md-form" id="uploadform" action="{{url_for('upload')}}" method="POST" enctype="multipart/form-data">
+                                                <div class="file-field">
+                                                    <input type="file" style="display:none" id="fileupload" name="file" onchange="form.submit()" accept="" multiple>
+                                                    <button type="button" id="btnUpload" class="btn btn-primary" onclick="clickUpload()">Upload</button>
+                                                    <input type="hidden" name="pathID" id="pathID" class="pathid" value="">
+                                                    
+                                                    
+                                                </div>
+                                            </form>
+                                            
+                                        </li>
+                                        <li class="list-group-item" id="forWhiteSmoke">
+                                            
+                                            
+                                            
+                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                                Create folder
+                                            </button>
+                                        </li>
+                                        <li class="list-group-item" id="forWhiteSmoke">
+                                            
+                                            
+                                            
+                                            <button type="button" class="btn btn-primary movehere" id="moveherebtn" style="display:none;">
+                                                Move Here
+                                            </button>
+                                        </li>
+                                    </ul>
+                                    
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </body>
-            
-            </html>
+                    </body>
+                    
+                    </html>

@@ -100,7 +100,7 @@ def view(id=None):
         print("In view, {0}".format(session["id"]))
         files = db_obj.get_folder_entries(db_obj.get_root_path_id(int(session["id"])))
         # lock.release()
-        # print(files)
+        print(files)
         return Response(render_template('homePage.html', data=files))
     else:
         # lock.acquire()
@@ -158,7 +158,7 @@ def upload():
     #target = APP_ROOT
     target = "/".join([target,session['email']])
     #path here
-    print("In python recieved path = " + request.form["pathID"])
+    print("In python recieved path = " + str(request.form["pathID"]))
     received_pathid = request.form["pathID"]
     full_path = ""
     path_for_file_in_db = received_pathid
@@ -168,7 +168,7 @@ def upload():
     if(received_pathid !=""):
         print("received_pathid is not None") 
         print(received_pathid)   
-        print("In python recieved path id = " + db_obj.get_folder_path(request.form["pathID"]))
+        print("In python recieved path id = " + str(db_obj.get_folder_path(request.form["pathID"])))
         full_path = db_obj.get_folder_path(request.form["pathID"])
     target = "".join([target,full_path])
     #formkdir = "-p "+target
@@ -193,7 +193,7 @@ def upload():
         file_details["permission"] = "private"
         db_obj.create_file(file_details)
         #return "success"
-        #return redirect(url_for('view'))
+        return redirect(url_for('view'))
         #return view()
     #return render_template('upload.html')
     return "dummy value"
@@ -236,6 +236,7 @@ def createFolder():
 @app.route("/get_root_path/",methods=['GET','POST'])
 def getRootPath():
     db_obj = DropBoxDB("praveen","S@gem0de")
+    print("In get root path, returning: " + str(db_obj.get_root_path_id(session["id"])))
     return json.dumps(db_obj.get_root_path_id(session["id"]))
 
 @app.route("/register", methods=['GET','POST'])

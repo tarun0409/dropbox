@@ -172,6 +172,7 @@ def create_file(db_obj, db_cursor, file_details):
   f_size = file_details["size"]
   f_owner = file_details["owner"]
   f_permission = file_details["permission"]
+  print("In create file f_name " + str(f_name) + " f_path " + str(f_path))
   select_string = "select * from file where NAME='"+f_name+"' and PATH="+str(f_path)
   db_cursor.execute(select_string)
   result_tuples = db_cursor.fetchall()
