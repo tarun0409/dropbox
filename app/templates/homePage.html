@@ -25,11 +25,20 @@
             $('input[type=submit]').hide();
             var click_id = "";
             var click_type = "";
-            var curr_page_id = 1;
+            var curr_page_id = "";
             var base_path = $(location).attr('href');
             var dir_list;
+            src_id ="";
             console.log(base_path);
             
+            $.get("/get_root_path/", function(data) {
+                curr_page_id = data;
+                var list = $('#nav-bar');
+                console.log(list);
+                list.empty();
+                console.log(data);
+                list.append("<li class=\"breadcrumb-item\"><label class=\"nav-id\" style=\"display:none\">" + data + "</label><a href=\"#\"class=\"nav-button\">DropBox Home</a></li>");
+            });
             
             // Delete row on delete button click
             $(document).on("click", ".delete", function() {
@@ -38,15 +47,39 @@
                 var type = $(this).parents("tr").children(".type").html();
                 if (type == "File") {
                     var jqxhr = $.get("/delete_file/" + id + "/", function() {
-                        alert("success");
                     });
                 } else {
                     var jqxhr = $.get("/delete_folder/" + id + "/", function() {
-                        alert("success");
                     });
                 }
                 $(this).parents("tr").remove();
             });
+            
+            $(document).on("click", ".move", function() {
+                console.log("in move");
+                src_id = click_id;
+                console.log($("#moveherebtn"));
+                $("#moveherebtn").show();
+            }); 
+            
+            $(document).on("click", "#moveherebtn", function() {
+                if (click_type == "File") {
+                    url = "/move_file/";
+                } else {
+                    url = "/move_folder/";
+                }
+                console.log("Url: " + url);
+                console.log("Before post");
+                var dest_id = curr_page_id; 
+                $.post(url, {
+                    src_id: src_id,
+                    dest_id: dest_id
+                });
+                console.log("After post");
+                $("#moveherebtn").hide();
+                getAndUpdatePageData(curr_page_id);
+            }); 
+            
             
             $(document).on("click", "#search_button",function(){
                 url = "/search"
@@ -80,10 +113,9 @@
                 //var href = $('.cssbuttongo').attr('href');
                 //window.location.href = href;
                 $('input[type=submit]')[0].click();
-                //document.getElementById("fid").submit()
-                
-                
             });
+            
+            
             
             // For move button click action
             $(document).on("click", ".modal_button", function() {
@@ -105,8 +137,7 @@
                 });
                 console.log("After post");
                 location.reload();
-            });
-            
+            });           
             
             //For navigating into directory
             $(document).on("click", ".name", function() {
@@ -136,8 +167,6 @@
                 curr_page_id = id;
                 $("#pathID").val(curr_page_id);
                 $("#dest_path").val(curr_page_id);
-                alert($("#pathID").val())
-                console.log("In upload " + $("#pathID").val());
                 getAndUpdatePageData(id);
                 getAndUpdateNavBar();
             });
@@ -181,10 +210,13 @@
                 console.log(list);
                 list.empty();
                 console.log(data);
-                list.append("<li class=\"breadcrumb-item\"><label class=\"nav-id\" \"hidden\">d</label><a href=\"http://127.0.0.1:5000/view/\">Home</a></li>");
+                // list.append("<li class=\"breadcrumb-item\"><label class=\"nav-id\" \"hidden\">d</label><a href=\"http://127.0.0.1:5000/view/\">Home</a></li>");
                 $.each(data, function(i, row) {
+                    if (i == 0) {
+                        list.append("<li class=\"breadcrumb-item\"><label class=\"nav-id\" style=\"display:none\">" + row["id"] + "</label><a href=\"#\"class=\"nav-button\">DropBox Home</a></li>");
+                    };
                     if (i > 0) {
-                        list.append("<li class=\"breadcrumb-item\"><label class=\"nav-id\" \"hidden\">" + row["id"] + "</label><a href=\"#\"class=\"nav-button\">" + row["name"] + "</a></li>");
+                        list.append("<li class=\"breadcrumb-item\"><label class=\"nav-id\" style=\"display:none\">" + row["id"] + "</label><a href=\"#\"class=\"nav-button\">" + row["name"] + "</a></li>");
                     };
                 });
             }
@@ -218,35 +250,48 @@
                 //get query
                 $.each(data["files"], function(i, row) {
                     list.append("<tr>" +
-                        "<td scope=\"row\" class=\"id\">" + row["id"] + "</a></td>" +
-                        "<td class=\"type\">File</td>" +
-                        "<td><a href=\"#\" class=\"name\">" + row["name"] + "</a></td>" +
-                        "<td>\
+                        "<td scope=\"row\" class=\"id\" hidden>" + row["id"] + "</a></td>" +
+                        "<td class=\"type\" hidden>File</td>" +
+                        "<td class=\"col-1\"><i class=\"material-icons\">file_copy</i></td>" + 
+                        "<td class=\"col-4\"><a href=\"#\" class=\"name\">" + row["name"] + "</a></td>" +
+                        "<td class=\"col-3\">"+
+                            "<select class=\"form-control\" id=\"Permission\">" + 
+                                "<option>Public</option>" +
+                                "<option>Private</option>" +
+                            "</select>" +
+                        "</td>" +
+                        "<td scope=\"row\" class=\"user col-3\">" + row["owner"]["name"] + "</td>" +
+                        "<td class=\"col-1\">\
                             <li class=\"dropdown\">\
                                 <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\"\
                                 aria-haspopup=\"true\" aria-expanded=\"false\">...<span class=\"caret\"></span></a>\
                                 <ul class=\"dropdown-menu\">\
                                     <li><a href=\"#\" class=\"delete\">delete</a></li>\
                                     <li><a href=\"#\" class=\"download\">download</a></li>\
-                                    <li><a href=\"#\" class=\"move\" data-toggle=\"modal\" data-target=\"#exampleModal\" data-whatever=\"@mdo\">move</a></li>\
+                                    <li><a href=\"#\" class=\"move\">Move</a></li>\
                                 </ul>\
                             </li>\
                         </td>" +
                         "</tr>");
                     });
+                    
+                    
                     $.each(data["folders"], function(i, row) {
                         list.append("<tr>" +
-                            "<td scope=\"row\" class=\"id\">" + row["id"] + "</a></td>" +
-                            "<td class=\"type\">Folder</td>" +
-                            "<td><a href=\"#\" class=\"name\">" + row["name"] + "</a></td>" +
-                            "<td>\
+                            "<td scope=\"row\" class=\"id\" hidden>" + row["id"] + "</a></td>" +
+                            "<td class=\"type\" hidden>Folder</td>" +
+                            "<td class=\"col-1\"><i class=\"material-icons\">folder</i></td>" + 
+                            "<td class=\"col-4\"><a href=\"#\" class=\"name\">" + row["name"] + "</a></td>" +
+                            "<td class=\"col-3\">-</td>" +
+                            "<td scope=\"row\" class=\"user col-3\">" + row["owner"]["name"] + "</td>" +
+                            "<td class=\"col-1\">\
                                 <li class=\"dropdown\">\
                                     <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\"\
                                     aria-haspopup=\"true\" aria-expanded=\"false\">...<span class=\"caret\"></span></a>\
                                     <ul class=\"dropdown-menu\">\
                                         <li><a href=\"#\" class=\"delete\">delete</a></li>\
                                         <li><a href=\"#\" class=\"download\">download</a></li>\
-                                        <li><a href=\"#\" class=\"move\" data-toggle=\"modal\" data-target=\"#exampleModal\" data-whatever=\"@mdo\">move</a></li>\
+                                        <li><a href=\"#\" class=\"move\">Move</a></li>\
                                     </ul>\
                                 </li>\
                             </td>" +
@@ -560,7 +605,7 @@
                                 <nav class="page-header-text u-l-fl" id="path-breadcrumbs" aria-label="Folder hierarchy" role="navigation">
                                     <nav aria-label="breadcrumb">
                                         <ol class="breadcrumb" id="nav-bar">
-                                            <li class="breadcrumb-item"><label class="hidden">d</label><a href="http://127.0.0.1:5000/view/">Home</a></li>
+                                            <li class="breadcrumb-item"><label style="display:none">d</label><a href="http://127.0.0.1:5000/view/">Home</a></li>
                                         </ol>
                                     </nav>
                                 </nav>
@@ -675,7 +720,7 @@
                                     
                                     
                                     
-                                    <button type="button" class="btn btn-primary" hidden>
+                                    <button type="button" class="btn btn-primary movehere" id="moveherebtn" style="display:none;">
                                         Move Here
                                     </button>
                                 </li>

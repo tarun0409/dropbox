@@ -12,7 +12,7 @@ import threading
 #DropBoxDB
 #import dropboxdb
 #127.0.0.1 localhost
-lock=thread.allocate_lock()
+# lock=thread.allocate_lock()
 #db_obj = DropBoxDB("praveen","S@gem0de")
 db_obj = DropBoxDB("praveen","S@gem0de")
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -46,7 +46,7 @@ def delete_folder(id = None):
     db_obj = DropBoxDB("praveen","S@gem0de")
     print("In delete folder {0}".format(id))
     db_obj.delete_folder(id)
-    return
+    return "Dsadsadas"
 
 @app.route('/move_file/', methods = ['GET', 'POST'])
 def move():
@@ -57,7 +57,7 @@ def move():
         dest_id = request.form["dest_id"]
         print("In move folder src:{0} dest{1}".format(src_id,dest_id))
         db_obj.move_file(src_id,dest_id)
-        return
+        return "dsadsadsa"
 
 @app.route('/get_folder_list/<id>/', methods = ['GET', 'POST'])
 def get_folder_entries(id = None):
@@ -81,6 +81,7 @@ def get_nav_context(id = None):
 @app.route('/view/<id>/')
 def view(id=None):
     session['id'] = 1
+    print("In view, id= {0}".format(id))
     if(id == None):
         # lock.acquire()
         db_obj = DropBoxDB("praveen","S@gem0de")
@@ -238,6 +239,11 @@ def createFolder():
     db_obj.create_folder(folder_details)
     print("succesfully created folder")
     return "ousdaiudsy"
+
+@app.route("/get_root_path/",methods=['GET','POST'])
+def getRootPath():
+    db_obj = DropBoxDB("praveen","S@gem0de")
+    return json.dumps(session["id"])
 
 @app.route("/register", methods=['GET','POST'])
 def register():
