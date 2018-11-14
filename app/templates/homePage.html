@@ -20,8 +20,48 @@
             $('#fileupload').click();
             console.log("checkin");
         }
+
+        update_size = function(){
+            url = "/used_space";
+            $.get(url, function(data)
+            {
+                var size_unit = "B";
+                used_size = parseInt(data);
+                var i=0;
+                orig_size = data;
+                while(used_size > 1024)
+                {
+                    used_size = used_size/1024;
+                    i++;
+                }
+                data = used_size.toString();
+                switch(i)
+                {
+                    case 0:
+                    size_unit = "B";
+                    break;
+                    case 1:
+                    size_unit = "KB";
+                    break;
+                    case 2:
+                    size_unit = "MB";
+                    break;
+                    case 3:
+                    size_unit = "GB";
+                    break;
+                    default:
+                    data = orig_size;
+                    size_unit = "B";
+                }
+                size_string = data+size_unit;
+                $("#used_size").empty();
+                $("#used_size").append(size_string);
+            });
+        } 
         
         $(document).ready(function() {
+            update_size();
+
             $('input[type=submit]').hide();
             var click_id = "";
             var click_type = "";
@@ -243,6 +283,7 @@
             
             //update page data
             function updatePageData(data) {
+                update_size();
                 var list = $('#tdata');
                 // console.log(list);
                 list.empty();
@@ -692,7 +733,7 @@
                                 <li class="list-group-item" id="forWhiteSmoke">
                                     
                                     <a>Size used :</a>
-                                    <label>100MB</label>
+                                    <label id="used_size"></label>
                                 </li>
                                 
                                 <li class="list-group-item" id="forWhiteSmoke">
