@@ -63,14 +63,36 @@ def get_file_size():
 def delete_file(id = None):
     db_obj = DropBoxDB("praveen","S@gem0de")
     print("In delete file{0}".format(id))
+    print("Getting file path in delete file {0}".format(db_obj.get_file_path(id)))
+    target = "/".join([APP_ROOT,"uploaded"])
+    target = "/".join([target,session['email']])
+    target = "/".join([target,db_obj.get_file_path(id)])
+    print("Deleting file: {0}".format(target))
     db_obj.delete_file(id)
+    os.remove(target)
     return "Dsadsadas"
+
+def deltree(target):
+    print("deltree", target)
+    for d in os.listdir(target):
+        try:
+            deltree(target + '/' + d)
+        except OSError:
+            os.remove(target + '/' + d)
+
+    os.rmdir(target)
+
 
 @app.route('/delete_folder/<id>/')
 def delete_folder(id = None):
     db_obj = DropBoxDB("praveen","S@gem0de")
     print("In delete folder {0}".format(id))
+    target = "/".join([APP_ROOT,"uploaded"])
+    target = "/".join([target,session['email']])
+    print("In delte folder path: ".format(db_obj.get_folder_path(id)))
+    target = "/".join([target,db_obj.get_folder_path(id)])
     db_obj.delete_folder(id)
+    deltree(target)
     return "Dsadsadas"
 
 @app.route('/move_file/', methods = ['GET', 'POST'])
